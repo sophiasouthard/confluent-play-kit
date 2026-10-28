@@ -1,0 +1,1017 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Confluent Play Kit</title>
+  <style>
+    :root {
+      --bg: #f4f6f9;
+      --surface: #ffffff;
+      --surface-alt: #eef1f6;
+      --border: #d9dee7;
+      --text: #1b2330;
+      --muted: #5a6577;
+      --accent: #0f62fe;
+      --accent-dark: #0043ce;
+      --accent-soft: #e5eeff;
+      --secondary: #6929c4;
+      --ok: #198038;
+      --warn: #b28600;
+      --warn-soft: #fff6d6;
+      --radius: 10px;
+      --maxw: 1080px;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, "Segoe UI", system-ui, sans-serif;
+      font-size: 15px;
+      line-height: 1.6;
+    }
+    a { color: var(--accent); }
+    code { font-family: "SF Mono", "Fira Code", monospace; font-size: 0.88em; background: var(--surface-alt); padding: 1px 6px; border-radius: 4px; }
+
+    /* ---------- Header ---------- */
+    .site-header { background: #161b26; color: #fff; }
+    .site-header .inner { max-width: var(--maxw); margin: 0 auto; padding: 22px 24px 0; }
+    .brand { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+    .brand h1 { margin: 0; font-size: 1.35rem; font-weight: 600; letter-spacing: 0.2px; }
+    .brand .tag { color: #a9b4c7; font-size: 0.85rem; }
+
+    /* ---------- Main tabs ---------- */
+    .tabbar { display: flex; gap: 4px; margin-top: 18px; overflow-x: auto; scrollbar-width: thin; }
+    .tab-btn {
+      appearance: none; border: 0; background: transparent; color: #a9b4c7;
+      font: inherit; font-weight: 500; padding: 11px 18px; cursor: pointer;
+      border-bottom: 3px solid transparent; white-space: nowrap;
+    }
+    .tab-btn:hover { color: #fff; }
+    .tab-btn:focus-visible { outline: 2px solid #78a9ff; outline-offset: -2px; }
+    .tab-btn[aria-selected="true"] { color: #fff; border-bottom-color: #78a9ff; }
+
+    /* ---------- Layout ---------- */
+    main { max-width: var(--maxw); margin: 0 auto; padding: 28px 24px 60px; }
+    .panel[hidden] { display: none; }
+    .panel > h2 { margin: 0 0 6px; font-size: 1.6rem; }
+    .lede { color: var(--muted); max-width: 70ch; margin: 0 0 22px; }
+    h3 { margin: 26px 0 10px; font-size: 1.1rem; }
+
+    /* ---------- Components ---------- */
+    .card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 18px 20px;
+    }
+    .grid { display: grid; gap: 16px; }
+    .grid.cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .grid.cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .grid.cols-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+
+    .callout { border-left: 4px solid var(--accent); background: var(--accent-soft); padding: 12px 16px; border-radius: 6px; margin: 16px 0; }
+    .callout.warn { border-left-color: var(--warn); background: var(--warn-soft); }
+    .callout strong:first-child { display: block; margin-bottom: 2px; }
+
+    .badge { display: inline-block; font-size: 0.72rem; font-weight: 600; letter-spacing: 0.3px; text-transform: uppercase; padding: 2px 8px; border-radius: 999px; background: var(--surface-alt); color: var(--muted); }
+    .badge.todo { background: var(--warn-soft); color: var(--warn); }
+    .badge.hyp { background: #f3e8ff; color: var(--secondary); }
+    .badge.src { background: var(--accent-soft); color: var(--accent-dark); text-transform: none; }
+
+    table { width: 100%; border-collapse: collapse; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
+    th, td { text-align: left; padding: 10px 14px; border-bottom: 1px solid var(--border); vertical-align: top; }
+    th { background: var(--surface-alt); font-size: 0.82rem; text-transform: uppercase; letter-spacing: 0.4px; color: var(--muted); }
+    tr:last-child td { border-bottom: 0; }
+
+    /* ---------- Sub-tabs ---------- */
+    .subtabs { margin-top: 14px; }
+    .subtab-list { display: flex; gap: 6px; flex-wrap: wrap; border-bottom: 1px solid var(--border); margin-bottom: 16px; }
+    .subtab-btn {
+      appearance: none; border: 0; background: transparent; font: inherit; color: var(--muted);
+      padding: 8px 14px; cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -1px;
+    }
+    .subtab-btn:hover { color: var(--text); }
+    .subtab-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+    .subtab-btn[aria-selected="true"] { color: var(--accent-dark); border-bottom-color: var(--accent); font-weight: 600; }
+    .subpanel[hidden] { display: none; }
+
+    /* ---------- Buttons / copy ---------- */
+    .btn {
+      appearance: none; border: 1px solid var(--accent); background: var(--accent); color: #fff;
+      font: inherit; font-weight: 500; padding: 7px 14px; border-radius: 6px; cursor: pointer;
+    }
+    .btn:hover { background: var(--accent-dark); }
+    .btn.ghost { background: transparent; color: var(--accent-dark); }
+    .btn.ghost:hover { background: var(--accent-soft); }
+    .btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+    .copy-block { position: relative; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 18px 20px; white-space: pre-wrap; }
+    .copy-row { display: flex; justify-content: flex-end; margin-top: 8px; }
+
+    .placeholder { border: 2px dashed var(--border); border-radius: var(--radius); padding: 28px; text-align: center; color: var(--muted); background: var(--surface); }
+
+    /* ---------- Overview ---------- */
+    .hero { background: #161b26; color: #fff; border-radius: var(--radius); padding: 28px 30px; margin-bottom: 22px; }
+    .hero h3 { margin: 0 0 8px; font-size: 1.5rem; line-height: 1.3; }
+    .hero p { margin: 0; color: #c6cfdd; max-width: 70ch; }
+    .pair-card h4 { margin: 0 0 4px; font-size: 1.05rem; }
+    .pair-card .trigger { color: var(--muted); font-size: 0.9rem; margin: 0 0 10px; }
+    .pair-card .value { margin: 0 0 12px; }
+    .pair-card a.btn { display: inline-block; text-decoration: none; }
+    .steps { counter-reset: step; list-style: none; padding: 0; margin: 0; display: grid; gap: 12px; grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    .steps li { counter-increment: step; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 16px; }
+    .steps li::before { content: counter(step); display: inline-flex; align-items: center; justify-content: center; width: 24px; height: 24px; border-radius: 50%; background: var(--accent); color: #fff; font-size: 0.8rem; font-weight: 600; margin-bottom: 6px; }
+    .steps li strong { display: block; }
+    .steps li span { color: var(--muted); font-size: 0.9rem; }
+    td.vm { background: #fbfcfe; }
+    .src-tag { font-size: 0.75rem; color: var(--accent-dark); white-space: nowrap; }
+    @media (max-width: 860px) { .steps { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+    @media (max-width: 560px) { .steps { grid-template-columns: 1fr; } }
+
+    footer { max-width: var(--maxw); margin: 0 auto; padding: 18px 24px 36px; color: var(--muted); font-size: 12px; text-align: center; border-top: 1px solid var(--border); }
+
+    #toast {
+      position: fixed; bottom: 22px; left: 50%; transform: translateX(-50%) translateY(20px);
+      background: #161b26; color: #fff; padding: 9px 16px; border-radius: 8px; font-size: 0.9rem;
+      opacity: 0; pointer-events: none; transition: opacity .15s, transform .15s;
+    }
+    #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+    @media (max-width: 860px) {
+      .grid.cols-4 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .grid.cols-3 { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 560px) {
+      .grid.cols-2, .grid.cols-4 { grid-template-columns: 1fr; }
+      main { padding: 20px 16px 48px; }
+      .site-header .inner { padding: 18px 16px 0; }
+    }
+    /* ---------- Play Library ---------- */
+    .kit-picker { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin-bottom: 20px; }
+    .kit-pick {
+      appearance: none; text-align: left; font: inherit; cursor: pointer; color: var(--text);
+      background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 12px 14px;
+    }
+    .kit-pick strong { display: block; }
+    .kit-pick span { color: var(--muted); font-size: 0.85rem; }
+    .kit-pick:hover { border-color: var(--accent); }
+    .kit-pick:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+    .kit-pick[aria-pressed="true"] { border-color: var(--accent); background: var(--accent-soft); box-shadow: inset 0 0 0 1px var(--accent); }
+    .kit-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 4px; }
+    .kit-head h3 { margin: 0; font-size: 1.3rem; }
+    .brief-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+    .brief-grid .wide { grid-column: 1 / -1; }
+    .brief-grid h4, .qa h4 { margin: 0 0 6px; font-size: 0.82rem; text-transform: uppercase; letter-spacing: 0.4px; color: var(--muted); }
+    .brief-grid p { margin: 0 0 6px; }
+    .brief-grid ul { margin: 0; padding-left: 20px; }
+    .gap-note { color: var(--warn); font-size: 0.88rem; }
+    .qa { margin-top: 18px; }
+    .qa ol, .qa ul.plain { margin: 0; padding-left: 22px; }
+    .qa li { margin-bottom: 6px; }
+    .objection { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 12px 16px; margin-bottom: 10px; }
+    .objection .say { font-weight: 600; margin: 0 0 4px; }
+    .objection .reply { margin: 0; color: var(--text); }
+    .check-list { list-style: none; padding: 0; margin: 0; }
+    .check-list li { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; margin-bottom: 8px; }
+    .check-list label { display: flex; gap: 10px; padding: 10px 14px; cursor: pointer; }
+    .check-list input { margin-top: 4px; accent-color: var(--accent); }
+    .check-count { color: var(--muted); margin: 10px 0 0; }
+    @media (max-width: 860px) { .kit-picker { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+    @media (max-width: 560px) { .kit-picker, .brief-grid { grid-template-columns: 1fr; } }
+    /* ---------- Account Mapper ---------- */
+    .mapper { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.3fr); gap: 20px; align-items: start; }
+    .map-form h4 { margin: 0 0 8px; font-size: 0.82rem; text-transform: uppercase; letter-spacing: 0.4px; color: var(--muted); }
+    .map-form h4:not(:first-child) { margin-top: 18px; }
+    .map-form .check-list li { background: var(--bg); }
+    .map-form input[type=text] { width: 100%; font: inherit; padding: 8px 10px; border: 1px solid var(--border); border-radius: 6px; background: var(--bg); color: var(--text); }
+    .map-form input[type=text]:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+    .map-form .btn { margin-top: 14px; }
+    .map-card { margin-bottom: 14px; }
+    .map-card.combo { border-color: var(--secondary); }
+    .map-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; margin-bottom: 6px; }
+    .map-head h4 { margin: 0; font-size: 1.05rem; }
+    .map-why { margin: 0 0 10px; color: var(--muted); }
+    .map-value { margin: 0; background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 10px 14px; }
+    .map-links { margin-top: 8px; display: flex; gap: 8px; flex-wrap: wrap; }
+    .map-links a.btn { text-decoration: none; display: inline-block; }
+    #panel-mapper details { margin-top: 20px; }
+    #panel-mapper summary { cursor: pointer; font-weight: 600; }
+    #panel-mapper details table { margin: 12px 0; }
+    @media (max-width: 860px) { .mapper { grid-template-columns: 1fr; } }
+    /* ---------- Personas and Rollout ---------- */
+    .mini-h { margin: 0 0 6px; font-size: 0.82rem; text-transform: uppercase; letter-spacing: 0.4px; color: var(--muted); }
+    .persona-table td, .track td { vertical-align: top; }
+    .persona-table td:first-child { white-space: nowrap; }
+    .plain-list { margin: 0; padding-left: 20px; }
+    .plain-list li { margin-bottom: 6px; }
+    .roll-steps { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .track input[type=number] { width: 100%; min-width: 70px; font: inherit; padding: 6px 8px; border: 1px solid var(--border); border-radius: 6px; background: var(--bg); color: var(--text); }
+    .track input[type=number]:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+    .track tr.total td { background: var(--surface-alt); }
+    @media (max-width: 860px) { .roll-steps { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+    @media (max-width: 560px) {
+      .roll-steps { grid-template-columns: 1fr; }
+      .persona-table thead { display: none; }
+      .persona-table, .persona-table tbody, .persona-table tr, .persona-table td { display: block; width: 100%; }
+      .persona-table tr { border-bottom: 1px solid var(--border); padding: 6px 0; }
+      .persona-table td { border: 0; padding: 4px 14px; white-space: normal !important; }
+      .persona-table td[data-label]::before { content: attr(data-label) ": "; font-weight: 600; color: var(--muted); }
+      #track-table { overflow-x: auto; }
+    }
+
+
+
+    /* ---------- Sources and Open Items ---------- */
+    .open-items td:first-child, .sources-table td:first-child { white-space: nowrap; }
+    .open-items td:first-child { white-space: normal; min-width: 150px; }
+    .sources-table td { word-break: break-word; }
+    @media (max-width: 860px) {
+      #panel-sources table { display: block; overflow-x: auto; }
+      .open-items td:nth-child(3) { min-width: 280px; }
+      .open-items td:nth-child(4) { min-width: 130px; }
+      .sources-table td:nth-child(2) { min-width: 240px; }
+    }
+
+
+
+
+
+    @media print {
+      body.print-brief .panel { display: none !important; }
+      body.print-brief #panel-library { display: block !important; }
+      body.print-brief .kit-picker, body.print-brief .kit-head .btn, body.print-brief #panel-library > h2, body.print-brief #panel-library > .lede { display: none !important; }
+      body.print-brief .subpanel { display: none !important; }
+      body.print-brief .subpanel.brief-panel { display: block !important; }
+      body { background: #fff; font-size: 12px; }
+      .site-header, footer, .copy-row, .subtab-list, #toast { display: none; }
+      .panel[hidden], .subpanel[hidden] { display: block !important; }
+      .card { break-inside: avoid; }
+    }
+  </style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="inner">
+    <div class="brand">
+      <h1>Confluent Play Kit</h1>
+      <span class="tag">Pair Confluent with the vendors your customers already run</span>
+    </div>
+    <nav class="tabbar" role="tablist" aria-label="Main sections">
+      <button class="tab-btn" role="tab" id="tab-overview"  aria-controls="panel-overview"  aria-selected="true"  data-tab="overview">Overview</button>
+      <button class="tab-btn" role="tab" id="tab-library"   aria-controls="panel-library"   aria-selected="false" data-tab="library" tabindex="-1">Play Library</button>
+      <button class="tab-btn" role="tab" id="tab-mapper"    aria-controls="panel-mapper"    aria-selected="false" data-tab="mapper" tabindex="-1">Account Mapper</button>
+      <button class="tab-btn" role="tab" id="tab-personas"  aria-controls="panel-personas"  aria-selected="false" data-tab="personas" tabindex="-1">Personas</button>
+      <button class="tab-btn" role="tab" id="tab-rollout"   aria-controls="panel-rollout"   aria-selected="false" data-tab="rollout" tabindex="-1">Rollout</button>
+      <button class="tab-btn" role="tab" id="tab-sources"   aria-controls="panel-sources"   aria-selected="false" data-tab="sources" tabindex="-1">Sources &amp; Open Items</button>
+    </nav>
+  </div>
+</header>
+
+<main>
+
+  <section class="panel" id="panel-overview" role="tabpanel" aria-labelledby="tab-overview">
+    <h2>Overview</h2>
+    <p class="lede">Why this play works, and what each kit contains.</p>
+    <div class="hero">
+      <h3>One simple play, repeated for each vendor your customers already run.</h3>
+      <p>Each kit gives sellers one trigger, one question, three benefits, one proof point and a short email for a vendor your customers already run: Splunk, Datadog, Snowflake and Databricks.</p>
+    </div>
+
+    <h3>Why now</h3>
+    <div class="grid cols-2">
+      <div class="card">
+        <strong>Confluent is now part of IBM</strong>
+        <p>IBM completed its acquisition of Confluent (about $11B enterprise value). That puts Confluent inside the IBM portfolio. <span class="src-tag">[S1]</span></p>
+      </div>
+      <div class="card">
+        <strong>Confluent is building for resellers</strong>
+        <p>Confluent launched "Sell With Confluent" for solution providers: automated quotes, instant approvals and co-marketing funds. <span class="badge todo">Confirm eligibility</span> <span class="src-tag">[S2]</span></p>
+      </div>
+    </div>
+
+    <h3>The four pairings</h3>
+    <div class="grid cols-2">
+      <div class="card pair-card">
+        <h4>Confluent + Splunk</h4>
+        <p class="trigger">Trigger: ingest-based licensing cost; Cisco now owns Splunk. <span class="src-tag">[S3]</span></p>
+        <p class="value">Filter and route data before it reaches Splunk so teams pay to index what matters.</p>
+        <a class="btn ghost" href="#library/splunk">Open Play Library</a>
+      </div>
+      <div class="card pair-card">
+        <h4>Confluent + Datadog</h4>
+        <p class="trigger">Trigger: observability bills that grow with data volume.</p>
+        <p class="value">Control telemetry before it reaches the observability tool, and reuse it across teams. <span class="src-tag">[S4]</span></p>
+        <a class="btn ghost" href="#library/datadog">Open Play Library</a>
+      </div>
+      <div class="card pair-card">
+        <h4>Confluent + Snowflake</h4>
+        <p class="trigger">Trigger: batch pipelines that leave the warehouse behind the business.</p>
+        <p class="value">Stream operational data into Snowflake as tables without hand-built ETL. <span class="src-tag">[S5]</span></p>
+        <a class="btn ghost" href="#library/snowflake">Open Play Library</a>
+      </div>
+      <div class="card pair-card">
+        <h4>Confluent + Databricks</h4>
+        <p class="trigger">Trigger: operational data that is not in the lakehouse in time for AI.</p>
+        <p class="value">Stream operational data into Delta Lake with governance through Unity Catalog. <span class="src-tag">[S6]</span></p>
+        <a class="btn ghost" href="#library/databricks">Open Play Library</a>
+      </div>
+    </div>
+
+    <h3>How an AE uses this site</h3>
+    <ol class="steps">
+      <li><strong>Map the account</strong><span>Use the Account Mapper to see which play fits the customer's stack.</span></li>
+      <li><strong>Pick the persona</strong><span>Check Personas to see who owns the problem and who feels it.</span></li>
+      <li><strong>Send the email</strong><span>Copy the template from the Play Library and fill in <code>[client name]</code>.</span></li>
+      <li><strong>Book the conversation</strong><span>Use the talk track for the first call, and bring in a Confluent or IBM specialist.</span></li>
+    </ol>
+
+    <div class="callout warn">
+      <strong>What this kit does not claim</strong>
+      Proof points are the vendors' own published claims and are labeled that way. Personas are working hypotheses to validate with sellers. See Sources &amp; Open Items for the full list.
+    </div>
+  </section>
+
+  <section class="panel" id="panel-library" role="tabpanel" aria-labelledby="tab-library" hidden>
+    <h2>Play Library</h2>
+    <p class="lede">One kit per pairing: Brief, Email, Talk Track, Personas, Account Checklist.</p>
+    <div class="kit-picker" id="kit-picker" aria-label="Choose a pairing"></div>
+    <div id="kit-view"></div>
+  </section>
+
+  <section class="panel" id="panel-mapper" role="tabpanel" aria-labelledby="tab-mapper" hidden>
+    <h2>Account Mapper</h2>
+    <p class="lede">Tick what the customer runs and what you have heard from them. The page ranks the plays and writes the value sentence for you.</p>
+    <div class="mapper">
+      <div class="card map-form" id="map-form">
+        <h4>1. What does the customer run?</h4>
+        <ul class="check-list" id="map-tech"></ul>
+        <h4>2. What have you heard?</h4>
+        <ul class="check-list" id="map-quals"></ul>
+        <h4><label for="map-name">3. Customer name (fills in [client name])</label></h4>
+        <input type="text" id="map-name" autocomplete="off" placeholder="Leave blank to keep [client name]">
+        <button class="btn ghost" type="button" id="map-reset">Clear all</button>
+      </div>
+      <div id="map-results" aria-live="polite"></div>
+    </div>
+    <div class="callout warn"><strong>A starting point, not a qualification</strong>The ranking only tells you which conversation to open first. Datadog and Splunk plays have no published savings figure, so no number is quoted for them.</div>
+    <details class="card">
+      <summary>How the score works</summary>
+      <div id="map-rules-body"></div>
+    </details>
+  </section>
+
+  <section class="panel" id="panel-personas" role="tabpanel" aria-labelledby="tab-personas" hidden>
+    <h2>Personas</h2>
+    <p class="lede">Who owns the problem, who feels it most, and who signs.</p>
+    <p><span class="badge hyp">Hypothesis</span> These are educated guesses from the product and market research. Confirm them with sellers before relying on them. Open questions for that conversation are on the Rollout tab.</p>
+    <div id="persona-matrix"></div>
+    <h3>How to use this in a first conversation</h3>
+    <div class="grid cols-3">
+      <div class="card"><h4 class="mini-h">Business owner</h4><p>Owns the budget and feels the cost. Open with the one-line value sentence, not the technology.</p></div>
+      <div class="card"><h4 class="mini-h">Technical buyer</h4><p>Decides whether it fits their setup. Ask for a short introduction rather than pitching; bring in a Confluent or IBM specialist for the details.</p></div>
+      <div class="card"><h4 class="mini-h">Most impacted</h4><p>Lives with the problem every day. Their stories make the best discovery questions and the best proof that the pain is real.</p></div>
+    </div>
+  </section>
+
+  <section class="panel" id="panel-rollout" role="tabpanel" aria-labelledby="tab-rollout" hidden>
+    <h2>Rollout</h2>
+    <p class="lede">How to roll the play out across more sellers.</p>
+    <h3>Steps to roll out the play</h3>
+    <ol class="steps roll-steps">
+      <li><strong>Pick the pairing</strong><span>Start with the one or two tools your pilot AEs' customers already run.</span></li>
+      <li><strong>Finalize the kit</strong><span>Confirm the email, value sentence and proof point with Confluent and IBM before anything is sent.</span></li>
+      <li><strong>Run an enablement session</strong><span>Walk the AEs through the Overview, one kit and the Account Mapper. Focus on how they make money, not on how the product works.</span></li>
+      <li><strong>Send to a pilot group</strong><span>A small set of AEs sends the email to accounts that fit the Account Mapper.</span></li>
+      <li><strong>Collect feedback</strong><span>Capture replies, objections and which accounts fit. Update the kit and the scoring weights.</span></li>
+      <li><strong>Repeat with the next pairing</strong><span>Reuse the same kit structure so each new pairing is a copy-and-edit job.</span></li>
+    </ol>
+
+    <h3>Tracking template</h3>
+    <p class="lede" style="margin-bottom:10px">Enter counts as the pilot runs. These are for tracking, not targets, and they are not saved when you leave the page.</p>
+    <div id="track-table"></div>
+
+    <div class="grid cols-2" style="margin-top:22px">
+      <div class="card">
+        <h4 class="mini-h">Ask Confluent / IBM</h4>
+        <ul class="plain-list">
+          <li>Does the Sell With Confluent program apply to our team, and what are its terms? <span class="src-tag">[S2]</span></li>
+          <li>Are co-marketing funds available for an email campaign?</li>
+          <li>Can a Confluent or IBM specialist join the first customer calls?</li>
+          <li>Is there a Splunk or Datadog reference customer, and an approved savings figure?</li>
+          <li>Who reviews and approves the final email and proof sentence?</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h4 class="mini-h">Ask the sellers</h4>
+        <ul class="check-list" id="seller-questions">
+          <li><label><input type="checkbox"> <span>Which of the four pairings do your customers run most?</span></label></li>
+          <li><label><input type="checkbox"> <span>Who do you normally speak to at those accounts, and does the persona table match?</span></label></li>
+          <li><label><input type="checkbox"> <span>Are the Account Mapper signals and weights reasonable?</span></label></li>
+          <li><label><input type="checkbox"> <span>How do you want to quote and fulfil Confluent?</span></label></li>
+        </ul>
+        <p class="check-count" id="seller-q-count">0 of 4 ticked</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="panel" id="panel-sources" role="tabpanel" aria-labelledby="tab-sources" hidden>
+    <h2>Sources &amp; Open Items</h2>
+    <p class="lede">Every claim traces to a link. Anything unverified is listed here.</p>
+    <h3>Open items</h3>
+    <p class="lede" style="margin-bottom:10px">Things this kit cannot yet claim with confidence. Resolve these before the pilot emails go out.</p>
+    <table class="open-items">
+      <thead><tr><th>Item</th><th>Where it shows up</th><th>What is known</th><th>Status</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Sell With Confluent may not apply to every partner</strong></td><td>Overview, Rollout</td><td>The program was announced Feb 24, 2026 for system integrators and solution providers, with automated quotes, instant approvals and co-marketing funds. Coverage reporting says it targets solution providers, service providers and regional integrators, especially those serving small and mid-size clients. Nothing found says whether a specific partner is eligible. <span class="src-tag">[S2]</span></td><td><span class="badge todo">Confirm with Confluent / IBM</span></td></tr>
+        <tr><td><strong>Personas are hypotheses</strong></td><td>Personas, each kit</td><td>Built from product and market research, not from sellers or customers.</td><td><span class="badge todo">Validate with sellers</span></td></tr>
+        <tr><td><strong>No Splunk savings figure</strong></td><td>Splunk kit</td><td>Confluent describes reducing ingest and index volume and licensing cost, but publishes no percentage. The kit quotes none. <span class="src-tag">[S7]</span></td><td><span class="badge todo">Ask for a reference customer</span></td></tr>
+        <tr><td><strong>No Datadog savings figure</strong></td><td>Datadog kit</td><td>Confluent describes reducing ingest costs qualitatively. No percentage was found. The kit quotes none. <span class="src-tag">[S4]</span></td><td><span class="badge todo">Ask for a reference customer</span></td></tr>
+        <tr><td><strong>30&ndash;50% is a vendor claim</strong></td><td>Snowflake and Databricks kits</td><td>Confluent states Tableflow "typically" lowers ingestion cost by 30&ndash;50%. It is Confluent's own figure and is labeled "Vendor claim" wherever it appears. <span class="src-tag">[S9]</span></td><td><span class="badge">Keep the label</span></td></tr>
+        <tr><td><strong>Unity Catalog on a private network</strong></td><td>Databricks kit</td><td>Tableflow does not integrate with Unity Catalogs deployed on private networks; the workspace must be reachable over the public internet. Docs describe a manual registration alternative. <span class="src-tag">[S12]</span></td><td><span class="badge todo">Ask on discovery calls</span></td></tr>
+        <tr><td><strong>Splunk + Datadog combined play is adapted wording</strong></td><td>Account Mapper</td><td>Confluent describes reusing observability data across tools and sending SIEM data to multiple destinations. No source covers Splunk and Datadog together, so that sentence is an extension of those general statements. <span class="src-tag">[S4]</span> <span class="src-tag">[S7]</span></td><td><span class="badge todo">Have Confluent review</span></td></tr>
+        <tr><td><strong>Account Mapper weights are a starting guess</strong></td><td>Account Mapper</td><td>Point values are editable in the page script and were not tested against real accounts.</td><td><span class="badge todo">Review with sellers</span></td></tr>
+      </tbody>
+    </table>
+
+    <h3>Sources</h3>
+    <p class="lede" style="margin-bottom:10px">Source keys such as <span class="src-tag">[S1]</span> are used throughout the site. Links open in a new tab. Pages can change, so re-check a claim before quoting it to a customer.</p>
+    <table class="sources-table">
+      <thead><tr><th>Key</th><th>Source</th><th>Supports</th></tr></thead>
+      <tbody id="sources-body"></tbody>
+    </table>
+  </section>
+
+</main>
+
+<div id="toast" role="status" aria-live="polite"></div>
+
+<footer>Made with IBM Bob</footer>
+
+<script>
+(function () {
+  'use strict';
+
+  var tabs = Array.prototype.slice.call(document.querySelectorAll('.tab-btn'));
+  var panels = Array.prototype.slice.call(document.querySelectorAll('.panel'));
+  var toastEl = document.getElementById('toast');
+  var toastTimer;
+
+  function toast(msg) {
+    toastEl.textContent = msg;
+    toastEl.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () { toastEl.classList.remove('show'); }, 1600);
+  }
+
+  /* ---------- Main tabs ---------- */
+  function showTab(name, updateHash) {
+    var found = false;
+    tabs.forEach(function (t) {
+      var on = t.dataset.tab === name;
+      if (on) found = true;
+      t.setAttribute('aria-selected', on ? 'true' : 'false');
+      t.tabIndex = on ? 0 : -1;
+    });
+    if (!found) { name = 'overview'; showTab(name, false); return; }
+    panels.forEach(function (p) { p.hidden = p.id !== 'panel-' + name; });
+    if (updateHash) history.replaceState(null, '', '#' + name);
+    window.scrollTo({ top: 0 });
+  }
+
+  tabs.forEach(function (t, i) {
+    t.addEventListener('click', function () { showTab(t.dataset.tab, true); });
+    t.addEventListener('keydown', function (e) {
+      var next = null;
+      if (e.key === 'ArrowRight') next = tabs[(i + 1) % tabs.length];
+      if (e.key === 'ArrowLeft') next = tabs[(i - 1 + tabs.length) % tabs.length];
+      if (e.key === 'Home') next = tabs[0];
+      if (e.key === 'End') next = tabs[tabs.length - 1];
+      if (next) { e.preventDefault(); next.focus(); showTab(next.dataset.tab, true); }
+    });
+  });
+
+  /* ---------- Sub-tabs (any [data-subtabs] container) ---------- */
+  function initSubtabs(root) {
+    var btns = Array.prototype.slice.call(root.querySelectorAll(':scope > .subtab-list > .subtab-btn'));
+    var subs = Array.prototype.slice.call(root.querySelectorAll(':scope > .subpanel'));
+    function show(id) {
+      btns.forEach(function (b) {
+        var on = b.dataset.sub === id;
+        b.setAttribute('aria-selected', on ? 'true' : 'false');
+        b.tabIndex = on ? 0 : -1;
+      });
+      subs.forEach(function (s) { s.hidden = s.id !== id; });
+    }
+    btns.forEach(function (b, i) {
+      b.addEventListener('click', function () { show(b.dataset.sub); });
+      b.addEventListener('keydown', function (e) {
+        var next = null;
+        if (e.key === 'ArrowRight') next = btns[(i + 1) % btns.length];
+        if (e.key === 'ArrowLeft') next = btns[(i - 1 + btns.length) % btns.length];
+        if (next) { e.preventDefault(); next.focus(); show(next.dataset.sub); }
+      });
+    });
+  }
+  window.initSubtabs = initSubtabs;
+  Array.prototype.forEach.call(document.querySelectorAll('[data-subtabs]'), initSubtabs);
+
+  /* ---------- Copy-to-clipboard helper (any [data-copy="#selector"] button) ---------- */
+  function copyText(text) {
+    if (navigator.clipboard && window.isSecureContext) {
+      return navigator.clipboard.writeText(text);
+    }
+    return new Promise(function (resolve, reject) {
+      var ta = document.createElement('textarea');
+      ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.select();
+      try { document.execCommand('copy') ? resolve() : reject(); } catch (err) { reject(err); }
+      document.body.removeChild(ta);
+    });
+  }
+  window.copyText = copyText;
+  window.toast = toast;
+
+  document.addEventListener('click', function (e) {
+    var btn = e.target.closest('[data-copy]');
+    if (!btn) return;
+    var target = document.querySelector(btn.dataset.copy);
+    if (!target) return;
+    var text = target.value !== undefined ? target.value : target.innerText;
+    copyText(text).then(function () { toast('Copied to clipboard'); },
+                        function () { toast('Copy failed - select the text and copy manually'); });
+  });
+
+  /* ---------- Play kits (single data structure, rendered by one template) ---------- */
+  var KITS = [
+    {
+      id: 'splunk', name: 'Splunk',
+      tagline: 'Keep security visibility high while controlling what it costs to send data into Splunk.',
+      trigger: 'Ingest-based licensing is a known cost pressure, and Splunk is now part of Cisco.',
+      trigSrc: ['S3', 'S7'],
+      question: 'Can you keep Splunk visibility high while managing what it costs to send data into it?',
+      benefits: [
+        'Lower ingest and index volume in tools that price by data volume',
+        'One clean stream of IT and security data that more than one tool can use',
+        'Freedom to add or change tools without rebuilding every data feed'
+      ],
+      proof: { kind: 'Qualitative', text: 'Confluent describes reducing ingest and index volume, and the licensing cost that comes with consumption-based pricing, by filtering and routing data before it reaches the SIEM.', src: ['S7', 'S8'] },
+      gap: 'No Confluent-published Splunk savings percentage was found. Ask Confluent for a Splunk reference customer before quoting a number.',
+      ask: 'A short conversation about how data reaches Splunk today.',
+      value: 'Confluent helps [client name] send Splunk the data that matters and route the rest to lower-cost storage, so security visibility stays high while ingest-based costs stay under control.',
+      email: {
+        subject: 'Getting more value from your Splunk spend',
+        body: 'Hi [client name],\n\nAre you looking for ways to keep Splunk visibility high while managing what it costs to send data into it?\n\nWe can help with Confluent, now part of IBM. Confluent is a data streaming platform that sits in front of tools like Splunk. It filters, enriches and routes data as it moves, so Splunk gets the data your teams need and lower-value data can go to cheaper storage.\n\nSome of the benefits organizations look for include:\n\u2022 Lower ingest and index volume in tools that price by data volume\n\u2022 One clean stream of IT and security data that more than one tool can use\n\u2022 Freedom to add or change tools without rebuilding every data feed\n\nConfluent describes this as reducing ingest and index volume and the licensing cost that comes with consumption-based pricing, and we can walk through what it could look like in your environment.\n\nWould you be open to a short conversation about how data reaches Splunk today and whether this approach would help?\n\nThanks,\n\n[your name]\n[your title]'
+      },
+      discovery: [
+        'How much data goes into Splunk each day, and who decides what goes in?',
+        'When the Splunk renewal comes up, what is the cost conversation about?',
+        'Does any of that data also matter to other teams or tools?',
+        'If you wanted to try another security or analytics tool, how hard would it be to feed it the same data?'
+      ],
+      objections: [
+        { say: '"We already have a pipeline tool for this."', reply: 'Splunk and Cribl both offer data-management features, and those can be good options. Confluent is a streaming platform, so the same data can also serve other teams and applications. A Confluent specialist can compare the options for your setup.' },
+        { say: '"We do not want to change how Splunk gets its data."', reply: 'Confluent has a connector designed to read from existing Splunk forwarders, so the starting point does not have to be a rebuild. A specialist can confirm what fits your environment.' },
+        { say: '"This sounds like a security team decision."', reply: 'It usually is. Start with whoever owns the Splunk budget and the security data. See the Personas tab.' }
+      ],
+      personas: [
+        ['Business owner', 'CISO or VP Security (owns the Splunk budget)'],
+        ['Technical buyer', 'Security engineering lead or Splunk platform owner'],
+        ['Most impacted', 'SOC analysts and Splunk admins who manage ingest limits']
+      ],
+      checklist: [
+        'Customer runs Splunk (Enterprise or Cloud)',
+        'Splunk is priced by data volume, or the team has hit license limits',
+        'Security or IT has complained about ingest cost or noisy data',
+        'Other tools (data lake, analytics, second SIEM) need the same data',
+        'You know who owns the Splunk budget'
+      ]
+    },
+    {
+      id: 'datadog', name: 'Datadog',
+      tagline: 'Control telemetry before it reaches Datadog, and reuse it across teams.',
+      trigger: 'Usage-based observability bills grow as logs, metrics and traces grow.',
+      trigSrc: ['S4', 'S11'],
+      question: 'Can you stay fully visible during spikes and incidents without your Datadog data volume driving the bill?',
+      benefits: [
+        'Shape and reduce telemetry before it reaches the observability tool',
+        'Stay visible through spikes and incidents',
+        'Reuse the same telemetry across tools and teams'
+      ],
+      proof: { kind: 'Qualitative', text: 'Confluent positions telemetry and observability pipelines as a way to reduce ingest costs, stay visible through spikes and reuse data across tools. Confluent has a fully managed sink connector for Datadog.', src: ['S4', 'S10'] },
+      gap: 'No Datadog savings percentage is published by Confluent. Do not quote one. Offer to model the customer\'s own data volumes.',
+      ask: 'A short conversation about what drives your observability data volume.',
+      value: 'Confluent lets [client name] shape telemetry before it reaches Datadog, so teams stay visible through spikes while data volume stays under control and the same data can serve other teams.',
+      email: {
+        subject: 'Keeping observability visible without the bill growing with it',
+        body: 'Hi [client name],\n\nAs your environment grows, is the volume of data you send to Datadog growing with it?\n\nWe can help with Confluent, now part of IBM. Confluent is a data streaming platform that lets you shape telemetry before it reaches your observability tools, and it has a fully managed connector for Datadog.\n\nSome of the benefits organizations look for include:\n\u2022 Less low-value data sent to usage-priced tools\n\u2022 Full visibility through traffic spikes and incidents\n\u2022 The same telemetry reused by other teams and tools\n\nWe do not quote savings numbers up front. We would rather look at your own data volumes and show what is realistic.\n\nWould you be open to a short conversation about what drives your observability data today?\n\nThanks,\n\n[your name]\n[your title]'
+      },
+      discovery: [
+        'What drove the last increase in the Datadog bill: logs, metrics, hosts or something else?',
+        'Does anyone filter or sample data before it gets to Datadog today?',
+        'During a spike or incident, do you ever turn data off to control cost?',
+        'Do other teams, such as security or data, need the same telemetry?'
+      ],
+      objections: [
+        { say: '"Datadog has its own cost controls."', reply: 'It does, and they are worth using. Confluent adds control before the data reaches any tool, so it can also feed other teams and tools.' },
+        { say: '"We already use Datadog to monitor Kafka."', reply: 'That pairs well. Datadog has an integration for monitoring Confluent Platform, so the two work together.' },
+        { say: '"What savings should we expect?"', reply: 'There is no published figure to quote. We would model it with your own data volumes with a Confluent specialist.' }
+      ],
+      personas: [
+        ['Business owner', 'VP Infrastructure or CTO (owns the observability budget)'],
+        ['Technical buyer', 'Head of SRE or platform engineering'],
+        ['Most impacted', 'SRE and platform teams who manage the data they send']
+      ],
+      checklist: [
+        'Customer runs Datadog in production',
+        'The Datadog bill grew faster than expected or has overages',
+        'Logs or custom metrics are high volume',
+        'Other teams want the same telemetry',
+        'Kafka or event streaming is already in use (nice to have)'
+      ]
+    },
+    {
+      id: 'snowflake', name: 'Snowflake',
+      tagline: 'Get operational data into Snowflake as ready-to-query tables, without hand-built pipelines.',
+      trigger: 'Batch pipelines leave Snowflake behind the business, and AI projects need fresher data.',
+      trigSrc: ['S5'],
+      question: 'Is the data in Snowflake as fresh as your analytics and AI projects need it to be?',
+      benefits: [
+        'Fresher data in Snowflake for analytics and AI',
+        'Less pipeline building and maintenance work',
+        'Governed tables that show up in Snowflake like any other dataset'
+      ],
+      proof: { kind: 'Vendor claim', text: 'Confluent states Tableflow typically delivers 30-50% lower ingestion cost than other stream-to-table approaches. This is Confluent\'s own benchmark and customer-based figure.', src: ['S9', 'S5'] },
+      gap: 'Label the 30-50% as a Confluent claim every time. Ask a Confluent specialist to model it with the customer\'s volumes.',
+      ask: 'A short conversation about how data reaches Snowflake today.',
+      value: 'Confluent streams [client name]\'s operational data into Snowflake as ready-to-query tables, so analytics and AI work from fresh data without hand-built pipelines.',
+      email: {
+        subject: 'Fresher data in Snowflake without more pipelines',
+        body: 'Hi [client name],\n\nIs the data in Snowflake as fresh as your analytics and AI projects need it to be?\n\nWe can help with Confluent, now part of IBM. Confluent\'s Tableflow turns streaming operational data into tables that Snowflake can query, without hand-built ETL.\n\nSome of the benefits organizations look for include:\n\u2022 Fresher data in Snowflake for analytics and AI\n\u2022 Less time spent building and fixing pipelines\n\u2022 Governed tables that appear in Snowflake like any other dataset\n\nConfluent reports that Tableflow typically delivers 30-50% lower ingestion costs than other approaches. That is Confluent\'s own figure, and we can look at what it would mean for your volumes.\n\nWould you be open to a short conversation about how data reaches Snowflake today?\n\nThanks,\n\n[your name]\n[your title]'
+      },
+      discovery: [
+        'How old is the data in Snowflake by the time an analyst uses it?',
+        'How does data from operational systems get loaded today, and who maintains that?',
+        'Are any AI or Cortex projects waiting on fresher data?',
+        'What does the pipeline team spend its time fixing?'
+      ],
+      objections: [
+        { say: '"We already load data with Snowpipe or another tool."', reply: 'Confluent compares Tableflow with Snowpipe and custom ETL in its own cost model. That is a vendor comparison, so we would test it with your volumes.' },
+        { say: '"We do not use Kafka."', reply: 'You do not need to. Confluent is a managed service, and the conversation starts with the business data feed, not the technology.' },
+        { say: '"Is 30-50% real for us?"', reply: 'It is Confluent\'s figure from its own benchmarks and customers. The honest answer comes from modelling your data with a Confluent specialist.' }
+      ],
+      personas: [
+        ['Business owner', 'Chief Data Officer or Head of Data'],
+        ['Technical buyer', 'Data engineering lead or data architect'],
+        ['Most impacted', 'Analysts who wait on data, and engineers who maintain pipelines']
+      ],
+      checklist: [
+        'Customer runs Snowflake in production',
+        'Operational data is loaded in batches or with custom ETL',
+        'The team spends real time maintaining pipelines',
+        'An AI, Cortex or real-time dashboard initiative is planned',
+        'You already support the customer on Snowflake'
+      ]
+    },
+    {
+      id: 'databricks', name: 'Databricks',
+      tagline: 'Land operational data in Databricks as governed Delta Lake tables.',
+      trigger: 'Operational data is not in the lakehouse in time for AI and analytics work.',
+      trigSrc: ['S6'],
+      question: 'Is your operational data reaching Databricks in time for the AI and analytics work your teams are planning?',
+      benefits: [
+        'Operational data arrives as Delta Lake tables without custom pipelines',
+        'Metadata and access policies stay in sync with Unity Catalog',
+        'Fresher data for AI and analytics teams'
+      ],
+      proof: { kind: 'Vendor claim', text: 'Delta Lake and Unity Catalog integrations in Tableflow reached general availability on Oct 29, 2025. Confluent also states Tableflow typically delivers 30-50% lower ingestion cost than other stream-to-table approaches.', src: ['S6', 'S9', 'S12'] },
+      gap: 'Confluent docs say the Unity Catalog integration does not support workspaces on private networks. Qualify this early. Label 30-50% as a Confluent claim.',
+      ask: 'A short conversation about how operational data reaches Databricks today.',
+      value: 'Confluent delivers [client name]\'s operational data into Databricks as governed Delta Lake tables, so AI and analytics teams work from current data without custom pipelines.',
+      email: {
+        subject: 'Getting operational data into Databricks in time for AI',
+        body: 'Hi [client name],\n\nIs your operational data reaching Databricks in time for the AI and analytics work your teams are planning?\n\nWe can help with Confluent, now part of IBM. Confluent\'s Tableflow delivers streaming operational data into Databricks as Delta Lake tables, with governance synced to Unity Catalog.\n\nSome of the benefits organizations look for include:\n\u2022 Operational data in Delta Lake without custom pipelines\n\u2022 Metadata and access policies kept in sync with Unity Catalog\n\u2022 Fresher data for AI and analytics teams\n\nConfluent reports that Tableflow typically delivers 30-50% lower ingestion costs than other approaches. That is Confluent\'s own figure, and we can look at what it would mean for your environment.\n\nWould you be open to a short conversation about how operational data reaches Databricks today?\n\nThanks,\n\n[your name]\n[your title]'
+      },
+      discovery: [
+        'How do operational events reach Databricks today?',
+        'How fresh does the data need to be for the AI or ML work you have planned?',
+        'Who owns governance, and is Unity Catalog the standard?',
+        'Which cloud are you on, and is the workspace reachable from outside your private network?'
+      ],
+      objections: [
+        { say: '"We already have ingestion pipelines into Databricks."', reply: 'Confluent compares Tableflow with Databricks pipelines and custom ETL in its own cost model. That is a vendor comparison, so we would test it with your data.' },
+        { say: '"Our workspace is on a private network."', reply: 'Confluent\'s documentation says the Unity Catalog integration does not support private-network workspaces. Bring in a Confluent specialist to confirm options.' },
+        { say: '"Is Delta Lake support production-ready?"', reply: 'Confluent announced general availability of Delta Lake and Unity Catalog support in Tableflow on Oct 29, 2025.' }
+      ],
+      personas: [
+        ['Business owner', 'Chief Data Officer or Head of AI'],
+        ['Technical buyer', 'Data platform lead or Databricks architect'],
+        ['Most impacted', 'Data scientists and ML engineers who need current data']
+      ],
+      checklist: [
+        'Customer runs Databricks in production',
+        'AI or ML projects need fresh operational data',
+        'Unity Catalog is used for governance',
+        'The customer is on AWS or Azure object storage',
+        'The Databricks workspace is reachable over the public internet'
+      ]
+    }
+  ];
+  window.KITS = KITS;
+
+  function esc(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+  function srcTags(a) { return (a || []).map(function (k) { return '<span class="src-tag">[' + k + ']</span>'; }).join(' '); }
+  function lis(arr) { return arr.map(function (x) { return '<li>' + esc(x) + '</li>'; }).join(''); }
+
+  var picker = document.getElementById('kit-picker');
+  var kitView = document.getElementById('kit-view');
+
+  function renderKit(k) {
+    var p = function (suffix) { return k.id + '-' + suffix; };
+    var tabs = [['brief', 'Brief'], ['email', 'Email'], ['talk', 'Talk Track'], ['personas', 'Personas'], ['check', 'Account Checklist']];
+    var list = tabs.map(function (t, i) {
+      return '<button class="subtab-btn" role="tab" aria-selected="' + (i === 0) + '" data-sub="' + p(t[0]) + '"' + (i ? ' tabindex="-1"' : '') + '>' + t[1] + '</button>';
+    }).join('');
+
+    var brief =
+      '<div class="subpanel brief-panel" role="tabpanel" id="' + p('brief') + '"><div class="card"><div class="brief-grid">' +
+        '<div><h4>Trigger</h4><p>' + esc(k.trigger) + ' ' + srcTags(k.trigSrc) + '</p></div>' +
+        '<div><h4>The one question</h4><p>' + esc(k.question) + '</p></div>' +
+        '<div><h4>Three benefits</h4><ul>' + lis(k.benefits) + '</ul></div>' +
+        '<div><h4>Proof point <span class="badge ' + (k.proof.kind === 'Qualitative' ? '' : 'hyp') + '">' + esc(k.proof.kind) + '</span></h4><p>' + esc(k.proof.text) + ' ' + srcTags(k.proof.src) + '</p><p class="gap-note">' + esc(k.gap) + '</p></div>' +
+        '<div><h4>The soft ask</h4><p>' + esc(k.ask) + '</p></div>' +
+        '<div class="wide"><h4>Value sentence</h4><p id="' + p('value') + '">' + esc(k.value) + '</p><div class="copy-row"><button class="btn ghost" data-copy="#' + p('value') + '">Copy value sentence</button></div></div>' +
+      '</div></div></div>';
+
+    var email =
+      '<div class="subpanel" role="tabpanel" id="' + p('email') + '" hidden>' +
+        '<p><strong>Subject:</strong> <span id="' + p('subject') + '">' + esc(k.email.subject) + '</span></p>' +
+        '<div class="copy-block" id="' + p('emailbody') + '">' + esc(k.email.body) + '</div>' +
+        '<div class="copy-row"><button class="btn ghost" data-copy="#' + p('subject') + '">Copy subject</button> &nbsp; <button class="btn" data-copy="#' + p('emailbody') + '">Copy email</button></div>' +
+        '<div class="callout"><strong>Before you send</strong>Replace <code>[client name]</code>, <code>[your name]</code> and <code>[your title]</code>. Keep the proof sentence labeled as it is.</div>' +
+      '</div>';
+
+    var talk =
+      '<div class="subpanel" role="tabpanel" id="' + p('talk') + '" hidden>' +
+        '<div class="card"><h4 style="margin:0 0 6px">Value sentence</h4><p style="margin:0">' + esc(k.value) + '</p></div>' +
+        '<div class="qa"><h4>Discovery questions</h4><ol>' + lis(k.discovery) + '</ol></div>' +
+        '<div class="qa"><h4>If they say...</h4>' +
+          k.objections.map(function (o) { return '<div class="objection"><p class="say">' + esc(o.say) + '</p><p class="reply">' + esc(o.reply) + '</p></div>'; }).join('') +
+        '</div>' +
+      '</div>';
+
+    var personas =
+      '<div class="subpanel" role="tabpanel" id="' + p('personas') + '" hidden>' +
+        '<p><span class="badge hyp">Hypothesis</span> Validate these with sellers before relying on them.</p>' +
+        '<table><thead><tr><th>Role in the deal</th><th>Likely person</th></tr></thead><tbody>' +
+          k.personas.map(function (r) { return '<tr><td><strong>' + esc(r[0]) + '</strong></td><td>' + esc(r[1]) + '</td></tr>'; }).join('') +
+        '</tbody></table>' +
+      '</div>';
+
+    var check =
+      '<div class="subpanel" role="tabpanel" id="' + p('check') + '" hidden>' +
+        '<p>Tick what is true for this account. The more you tick, the better the fit.</p>' +
+        '<ul class="check-list">' +
+          k.checklist.map(function (c) { return '<li><label><input type="checkbox" data-kit-check> <span>' + esc(c) + '</span></label></li>'; }).join('') +
+        '</ul>' +
+        '<p class="check-count" data-check-count>0 of ' + k.checklist.length + ' ticked</p>' +
+      '</div>';
+
+    kitView.innerHTML =
+      '<div class="kit-head"><h3>Confluent + ' + esc(k.name) + '</h3><button class="btn ghost" data-print-brief>Print brief</button></div>' +
+      '<p class="lede">' + esc(k.tagline) + '</p>' +
+      '<div class="subtabs" data-subtabs><div class="subtab-list" role="tablist" aria-label="' + esc(k.name) + ' kit sections">' + list + '</div>' +
+      brief + email + talk + personas + check + '</div>';
+    initSubtabs(kitView.querySelector('[data-subtabs]'));
+  }
+
+  function selectKit(id, updateHash) {
+    var k = KITS.filter(function (x) { return x.id === id; })[0] || KITS[0];
+    Array.prototype.forEach.call(picker.querySelectorAll('.kit-pick'), function (b) {
+      b.setAttribute('aria-pressed', b.dataset.kit === k.id ? 'true' : 'false');
+    });
+    renderKit(k);
+    if (updateHash) history.replaceState(null, '', '#library/' + k.id);
+  }
+  window.selectKit = selectKit;
+
+  picker.innerHTML = KITS.map(function (k) {
+    return '<button class="kit-pick" data-kit="' + k.id + '" aria-pressed="false"><strong>' + esc(k.name) + '</strong><span>' + esc(k.tagline) + '</span></button>';
+  }).join('');
+  picker.addEventListener('click', function (e) {
+    var b = e.target.closest('.kit-pick');
+    if (b) selectKit(b.dataset.kit, true);
+  });
+
+  kitView.addEventListener('change', function (e) {
+    if (!e.target.matches('[data-kit-check]')) return;
+    var total = kitView.querySelectorAll('[data-kit-check]').length;
+    var n = kitView.querySelectorAll('[data-kit-check]:checked').length;
+    kitView.querySelector('[data-check-count]').textContent = n + ' of ' + total + ' ticked';
+  });
+
+  document.addEventListener('click', function (e) {
+    if (!e.target.closest('[data-print-brief]')) return;
+    document.body.classList.add('print-brief');
+    window.print();
+    document.body.classList.remove('print-brief');
+  });
+
+  selectKit('splunk', false);
+
+  /* ---------- Account Mapper ---------- */
+  // Scoring rules live here. Change a number or a phrase and the tab (including the rules table) updates itself.
+  var MAP_TECH_POINTS = 3;   // points a play earns when the customer runs that tool
+  var MAP_STRONG_AT = 5;     // score at or above this shows "Strong fit"
+  var MAP_TECH_WHY = {
+    splunk: 'runs Splunk today',
+    datadog: 'runs Datadog today',
+    snowflake: 'runs Snowflake today',
+    databricks: 'runs Databricks today'
+  };
+  function same(v) { return { splunk: v, datadog: v, snowflake: v, databricks: v }; }
+  var MAP_QUALS = [
+    { id: 'cost', label: 'Complains about log, security-data or observability cost',
+      points: { splunk: 2, datadog: 2 },
+      why: { splunk: 'feels the cost of sending data into Splunk', datadog: 'feels rising observability bills' } },
+    { id: 'ai', label: 'Is building AI or agents',
+      points: { snowflake: 2, databricks: 2 },
+      why: { snowflake: 'AI projects need fresh data in Snowflake', databricks: 'AI projects need fresh data in Databricks' } },
+    { id: 'stale', label: 'Reports or dashboards run on data that is hours or a day old',
+      points: { snowflake: 2, databricks: 2 },
+      why: { snowflake: 'warehouse data arrives late', databricks: 'lakehouse data arrives late' } },
+    { id: 'ibm', label: 'Already buys IBM products',
+      points: same(1), why: same('already an IBM account') },
+  ];
+  // Pairings that get an extra card when every listed tool is ticked.
+  var MAP_COMBOS = [
+    { needs: ['splunk', 'datadog'], name: 'Splunk + Datadog together',
+      why: 'runs both Splunk and Datadog, so one shared stream of data can feed both tools instead of two separate feeds',
+      value: 'Confluent helps [client name] send Splunk and Datadog only the data each one needs from a single shared stream, so security and performance visibility stay high while the cost of feeding both stays under control.',
+      src: ['S4', 'S7'] }
+  ];
+
+  var mapNameEl = document.getElementById('map-name');
+  var mapResultsEl = document.getElementById('map-results');
+  var mapForm = document.getElementById('map-form');
+
+  function kitById(id) { return KITS.filter(function (k) { return k.id === id; })[0]; }
+  function fillName(v, name) { return v.split('[client name]').join(name || '[client name]'); }
+  function sentence(parts) {
+    var s = parts.join('; ');
+    return s.charAt(0).toUpperCase() + s.slice(1) + '.';
+  }
+
+  document.getElementById('map-tech').innerHTML = KITS.map(function (k) {
+    return '<li><label><input type="checkbox" data-map-tech="' + k.id + '"> <span>' + esc(k.name) + '</span></label></li>';
+  }).join('');
+  document.getElementById('map-quals').innerHTML = MAP_QUALS.map(function (q) {
+    return '<li><label><input type="checkbox" data-map-qual="' + q.id + '"> <span>' + esc(q.label) + '</span></label></li>';
+  }).join('');
+
+  document.getElementById('map-rules-body').innerHTML =
+    '<table><thead><tr><th>If you tick...</th>' + KITS.map(function (k) { return '<th>' + esc(k.name) + '</th>'; }).join('') + '</tr></thead><tbody>' +
+      '<tr><td>The tool itself</td>' + KITS.map(function () { return '<td>' + MAP_TECH_POINTS + '</td>'; }).join('') + '</tr>' +
+      MAP_QUALS.map(function (q) {
+        return '<tr><td>' + esc(q.label) + '</td>' + KITS.map(function (k) { return '<td>' + (q.points[k.id] || 0) + '</td>'; }).join('') + '</tr>';
+      }).join('') +
+    '</tbody></table>' +
+    '<p>A play only appears if you tick its tool. It shows as <strong>Strong fit</strong> at ' + MAP_STRONG_AT + ' points or more, otherwise <strong>Possible fit</strong>. These weights are a starting guess to adjust with sellers.</p>';
+
+  function scoreMapper() {
+    var techs = Array.prototype.map.call(mapForm.querySelectorAll('[data-map-tech]:checked'), function (c) { return c.dataset.mapTech; });
+    var quals = Array.prototype.map.call(mapForm.querySelectorAll('[data-map-qual]:checked'), function (c) { return c.dataset.mapQual; });
+    var rows = KITS.filter(function (k) { return techs.indexOf(k.id) > -1; }).map(function (k, i) {
+      var score = MAP_TECH_POINTS, why = [MAP_TECH_WHY[k.id]];
+      MAP_QUALS.forEach(function (q) {
+        if (quals.indexOf(q.id) > -1 && q.points[k.id]) { score += q.points[k.id]; why.push(q.why[k.id]); }
+      });
+      return { kit: k, score: score, why: why, order: i };
+    });
+    rows.sort(function (a, b) { return b.score - a.score || a.order - b.order; });
+    var combos = MAP_COMBOS.filter(function (c) { return c.needs.every(function (id) { return techs.indexOf(id) > -1; }); });
+    return { techs: techs, rows: rows, combos: combos };
+  }
+
+  function valueBlock(id, text, name) {
+    return '<p class="map-value" id="map-val-' + id + '">' + esc(fillName(text, name)) + '</p>' +
+           '<div class="copy-row"><button class="btn ghost" data-copy="#map-val-' + id + '">Copy value sentence</button></div>';
+  }
+
+  function renderMapper() {
+    var name = mapNameEl.value.trim();
+    var r = scoreMapper();
+    if (!r.rows.length) {
+      mapResultsEl.innerHTML = '<div class="placeholder">Tick at least one technology on the left to see which play fits.</div>';
+      return;
+    }
+    var html = '';
+    r.combos.forEach(function (c, i) {
+      var links = c.needs.map(function (id) { return '<a class="btn ghost" href="#library/' + id + '">Open the ' + esc(kitById(id).name) + ' kit</a>'; }).join(' ');
+      html += '<div class="card map-card combo"><div class="map-head"><h4>' + esc(c.name) + '</h4><span class="badge hyp">Combined play</span></div>' +
+        '<p class="map-why">' + esc(sentence([c.why])) + ' ' + srcTags(c.src) + '</p>' +
+        valueBlock('combo' + i, c.value, name) + '<div class="map-links">' + links + '</div></div>';
+    });
+    r.rows.forEach(function (row, i) {
+      var strong = row.score >= MAP_STRONG_AT;
+      html += '<div class="card map-card"><div class="map-head"><h4>' + (i + 1) + '. Confluent + ' + esc(row.kit.name) + '</h4>' +
+        '<span class="badge' + (strong ? ' src' : '') + '">' + (strong ? 'Strong fit' : 'Possible fit') + ' &middot; ' + row.score + ' points</span></div>' +
+        '<p class="map-why">' + esc(sentence(row.why)) + '</p>' +
+        valueBlock(row.kit.id, row.kit.value, name) +
+        '<div class="map-links"><a class="btn ghost" href="#library/' + row.kit.id + '">Open the ' + esc(row.kit.name) + ' kit</a></div></div>';
+    });
+    mapResultsEl.innerHTML = html;
+  }
+
+  mapForm.addEventListener('change', renderMapper);
+  mapNameEl.addEventListener('input', renderMapper);
+  document.getElementById('map-reset').addEventListener('click', function () {
+    Array.prototype.forEach.call(mapForm.querySelectorAll('input[type=checkbox]'), function (c) { c.checked = false; });
+    mapNameEl.value = '';
+    renderMapper();
+  });
+  renderMapper();
+
+  /* ---------- Personas (generated from KITS so it matches each kit's Personas sub-tab) ---------- */
+  (function () {
+    var roles = KITS[0].personas.map(function (r) { return r[0]; });
+    document.getElementById('persona-matrix').innerHTML =
+      '<table class="persona-table"><thead><tr><th>Pairing</th>' +
+        roles.map(function (r) { return '<th>' + esc(r) + '</th>'; }).join('') + '</tr></thead><tbody>' +
+        KITS.map(function (k) {
+          return '<tr><td><strong>' + esc(k.name) + '</strong><br><a href="#library/' + k.id + '">Open kit</a></td>' +
+            roles.map(function (role) {
+              var hit = k.personas.filter(function (p) { return p[0] === role; })[0];
+              return '<td data-label="' + esc(role) + '">' + (hit ? esc(hit[1]) : '') + '</td>';
+            }).join('') + '</tr>';
+        }).join('') +
+      '</tbody></table>';
+  })();
+
+  /* ---------- Rollout: tracking template (counts only, no targets, not saved) ---------- */
+  var TRACK_METRICS = ['Emails sent', 'Replies', 'Meetings booked', 'Opportunities created'];
+  (function () {
+    var wrap = document.getElementById('track-table');
+    wrap.innerHTML =
+      '<table class="track"><thead><tr><th>Pairing</th>' + TRACK_METRICS.map(function (m) { return '<th>' + esc(m) + '</th>'; }).join('') + '</tr></thead><tbody>' +
+        KITS.map(function (k) {
+          return '<tr><td><strong>' + esc(k.name) + '</strong></td>' + TRACK_METRICS.map(function (m, i) {
+            return '<td><input type="number" min="0" inputmode="numeric" aria-label="' + esc(k.name + ' - ' + m) + '" data-track-row="' + k.id + '" data-track-col="' + i + '"></td>';
+          }).join('') + '</tr>';
+        }).join('') +
+        '<tr class="total"><td><strong>Total</strong></td>' + TRACK_METRICS.map(function (m, i) { return '<td data-track-total="' + i + '">0</td>'; }).join('') + '</tr>' +
+      '</tbody></table>';
+    wrap.addEventListener('input', function (e) {
+      if (!e.target.matches('[data-track-col]')) return;
+      TRACK_METRICS.forEach(function (m, i) {
+        var sum = 0;
+        Array.prototype.forEach.call(wrap.querySelectorAll('[data-track-col="' + i + '"]'), function (inp) { sum += Math.max(0, parseInt(inp.value, 10) || 0); });
+        wrap.querySelector('[data-track-total="' + i + '"]').textContent = sum;
+      });
+    });
+  })();
+
+  /* ---------- Rollout: seller questions counter ---------- */
+  document.getElementById('seller-questions').addEventListener('change', function () {
+    var all = document.querySelectorAll('#seller-questions input').length;
+    var on = document.querySelectorAll('#seller-questions input:checked').length;
+    document.getElementById('seller-q-count').textContent = on + ' of ' + all + ' ticked';
+  });
+
+
+
+  /* ---------- Sources (single list; keys match the [S#] tags used across the site) ---------- */
+  var SOURCES = [
+    ['S1', 'IBM Newsroom: IBM Completes Acquisition of Confluent (Mar 17, 2026)', 'https://newsroom.ibm.com/2026-03-17-ibm-completes-acquisition-of-confluent,-making-real-time-data-the-engine-of-enterprise-ai-and-agents', 'Acquisition completed; about $11B enterprise value'],
+    ['S2', 'Confluent press release: Sell With Confluent (Feb 24, 2026)', 'https://www.confluent.io/press-release/sell-with-confluent', 'Reseller program: automated quotes, instant approvals, co-marketing funds. Coverage: crn.com, "Confluent Looks To Streamline Partner Resell Efforts"'],
+    ['S3', 'Cisco Newsroom: Cisco Completes Acquisition of Splunk (Mar 18, 2024)', 'https://newsroom.cisco.com/c/r/newsroom/en/us/a/y2024/m03/cisco-completes-acquisition-of-splunk.html', 'Splunk is now part of Cisco'],
+    ['S4', 'Confluent: Real-Time Streaming for Telemetry & Observability Pipelines', 'https://www.confluent.io/use-case/real-time-streaming-telemetry-observability-pipelines', 'Control telemetry before it reaches observability tools; reduce ingest costs; reuse data across tools and teams'],
+    ['S5', 'Confluent blog: Tableflow GA for Kafka, Snowflake and Iceberg', 'https://www.confluent.io/blog/tableflow-ga-kafka-snowflake-iceberg/', 'Tableflow integration with Snowflake Open Catalog'],
+    ['S6', 'Confluent press release: Tableflow expands to Delta Lake and Unity Catalog (Oct 29, 2025)', 'https://www.confluent.io/press-release/Tableflow-powers-real-time-AI-across-clouds/', 'Delta Lake and Databricks Unity Catalog integrations reached general availability'],
+    ['S7', 'Confluent: Optimize your SIEM', 'https://www.confluent.io/use-case/siem/', 'Reduce ingest and index volume and licensing cost of volume-based pricing; use multiple tools and destinations'],
+    ['S8', 'Confluent blog: Splunk S2S Source Premium Connector', 'https://www.confluent.io/blog/splunk-s2s-source-premium-connector-for-confluent/', 'Reads data directly from Splunk Universal Forwarders'],
+    ['S9', 'Confluent blog: Feed your data lake with AI-ready tables for 30-50% lower cost', 'https://www.confluent.io/blog/tableflow-tco-savings/', 'The 30-50% figure. Vendor claim.'],
+    ['S10', 'Confluent Learn: Observability', 'https://www.confluent.io/learn/observability/', 'Fully managed sink connectors for Datadog, Splunk and Elastic'],
+    ['S11', 'Datadog blog: Monitor Confluent Platform with Datadog', 'https://www.datadoghq.com/blog/monitor-confluent-platform-datadog/', 'Datadog integration for monitoring Confluent Platform'],
+    ['S12', 'Confluent docs: Integrate Tableflow with Unity Catalog', 'https://docs.confluent.io/cloud/current/topics/tableflow/how-to-guides/catalog-integration/integrate-with-unity-catalog.html', 'Unity Catalogs on private networks are not supported']
+  ];
+  document.getElementById('sources-body').innerHTML = SOURCES.map(function (s) {
+    return '<tr id="src-' + s[0] + '"><td><span class="src-tag">[' + s[0] + ']</span></td>' +
+      '<td><a href="' + s[2] + '" target="_blank" rel="noopener noreferrer">' + esc(s[1]) + '</a></td><td>' + esc(s[3]) + '</td></tr>';
+  }).join('');
+  window.SOURCES = SOURCES;
+
+
+
+  /* ---------- Deep links ---------- */
+  function fromHash() {
+    var parts = (location.hash || '#overview').slice(1).split('/');
+    showTab(parts[0], false);
+    if (parts[0] === 'library' && parts[1]) selectKit(parts[1], false);
+  }
+  window.addEventListener('hashchange', fromHash);
+  fromHash();
+})();
+</script>
+</body>
+</html>
