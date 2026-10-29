@@ -223,7 +223,7 @@
 
 
 
-    /* ---------- Sources and Open Items ---------- */
+    /* ---------- Sources ---------- */
     .open-items td:first-child, .sources-table td:first-child { white-space: nowrap; }
     .open-items td:first-child { white-space: normal; min-width: 150px; }
     .sources-table td { word-break: break-word; }
@@ -266,7 +266,7 @@
       <button class="tab-btn" role="tab" id="tab-mapper"    aria-controls="panel-mapper"    aria-selected="false" data-tab="mapper" tabindex="-1">Account Mapper</button>
       <button class="tab-btn" role="tab" id="tab-personas"  aria-controls="panel-personas"  aria-selected="false" data-tab="personas" tabindex="-1">Personas</button>
       <button class="tab-btn" role="tab" id="tab-rollout"   aria-controls="panel-rollout"   aria-selected="false" data-tab="rollout" tabindex="-1">Rollout</button>
-      <button class="tab-btn" role="tab" id="tab-sources"   aria-controls="panel-sources"   aria-selected="false" data-tab="sources" tabindex="-1">Sources &amp; Open Items</button>
+      <button class="tab-btn" role="tab" id="tab-sources"   aria-controls="panel-sources"   aria-selected="false" data-tab="sources" tabindex="-1">Sources</button>
     </nav>
   </div>
 </header>
@@ -353,7 +353,7 @@
 
     <div class="callout warn">
       <strong>What this kit does not claim</strong>
-      Proof points are the vendors' own published claims and are labeled that way. Personas are working hypotheses to validate with sellers. See Sources &amp; Open Items for the full list.
+      Proof points are the vendors' own published claims and are labeled that way. Personas are working hypotheses to validate with sellers. See Sources for the link behind each claim.
     </div>
   </section>
 
@@ -460,31 +460,8 @@
   </section>
 
   <section class="panel" id="panel-sources" role="tabpanel" aria-labelledby="tab-sources" hidden>
-    <h2>Sources &amp; Open Items</h2>
-    <p class="lede">Every claim traces to a link. Anything unverified is listed here.</p>
-    <h3>Open items</h3>
-    <p class="lede" style="margin-bottom:10px">Things this kit cannot yet claim with confidence. Resolve these before the pilot emails go out.</p>
-    <table class="open-items">
-      <thead><tr><th>Item</th><th>Where it shows up</th><th>What is known</th><th>Status</th></tr></thead>
-      <tbody>
-        <tr><td><strong>Sell With Confluent may not apply to every partner</strong></td><td>Overview, Rollout</td><td>The program was announced Feb 24, 2026 for system integrators and solution providers, with automated quotes, instant approvals and co-marketing funds. Coverage reporting says it targets solution providers, service providers and regional integrators, especially those serving small and mid-size clients. Nothing found says whether a specific partner is eligible. <span class="src-tag">[S2]</span></td><td><span class="badge todo">Confirm with Confluent / IBM</span></td></tr>
-        <tr><td><strong>Personas are hypotheses</strong></td><td>Personas, each kit</td><td>Built from product and market research, not from sellers or customers.</td><td><span class="badge todo">Validate with sellers</span></td></tr>
-        <tr><td><strong>No Splunk savings figure</strong></td><td>Splunk kit</td><td>Confluent describes reducing ingest and index volume and licensing cost, but publishes no percentage. The kit quotes none. <span class="src-tag">[S7]</span></td><td><span class="badge todo">Ask for a reference customer</span></td></tr>
-        <tr><td><strong>No Datadog savings figure</strong></td><td>Datadog kit</td><td>Confluent describes reducing ingest costs qualitatively. No percentage was found. The kit quotes none. <span class="src-tag">[S4]</span></td><td><span class="badge todo">Ask for a reference customer</span></td></tr>
-        <tr><td><strong>30&ndash;50% is a vendor claim</strong></td><td>Snowflake and Databricks kits</td><td>Confluent states Tableflow "typically" lowers ingestion cost by 30&ndash;50%. It is Confluent's own figure and is labeled "Vendor claim" wherever it appears. <span class="src-tag">[S9]</span></td><td><span class="badge">Keep the label</span></td></tr>
-        <tr><td><strong>Unity Catalog on a private network</strong></td><td>Databricks kit</td><td>Tableflow does not integrate with Unity Catalogs deployed on private networks; the workspace must be reachable over the public internet. Docs describe a manual registration alternative. <span class="src-tag">[S12]</span></td><td><span class="badge todo">Ask on discovery calls</span></td></tr>
-        <tr><td><strong>Splunk + Datadog combined play is adapted wording</strong></td><td>Account Mapper</td><td>Confluent describes reusing observability data across tools and sending SIEM data to multiple destinations. No source covers Splunk and Datadog together, so that sentence is an extension of those general statements. <span class="src-tag">[S4]</span> <span class="src-tag">[S7]</span></td><td><span class="badge todo">Have Confluent review</span></td></tr>
-        <tr><td><strong>Lead-play ranking is partner feedback</strong></td><td>Overview, Play Library, Databricks and MongoDB kits</td><td>Databricks is described as Confluent's most active ISV partner, with joint initiatives including installed-base account mapping. MongoDB is described as the most active ISV on both technical and commercial fronts. This came from Confluent partner feedback and is not a published source.</td><td><span class="badge todo">Confirm with Confluent partner team</span></td></tr>
-        <tr><td><strong>Snowflake joint motion is lower</strong></td><td>Snowflake kit, Overview</td><td>Partner feedback says Snowflake has been less active because Datastream was used as a workaround for Kafka ingestion. The kit stays in the Play Library but is ranked below Databricks and MongoDB.</td><td><span class="badge todo">Confirm with Confluent partner team</span></td></tr>
-        <tr><td><strong>No MongoDB savings figure</strong></td><td>MongoDB kit</td><td>Confluent and MongoDB describe the connectors and the AI use case but publish no savings percentage. The kit quotes none. <span class="src-tag">[S13]</span> <span class="src-tag">[S14]</span></td><td><span class="badge todo">Ask for a reference customer</span></td></tr>
-        <tr><td><strong>Managed MongoDB connector exposes fewer options</strong></td><td>MongoDB kit</td><td>Confluent's announcement says the fully managed Atlas connectors expose a subset of the self-hosted connector options. That post may be dated, so check the current connector docs before promising a specific setting. <span class="src-tag">[S13]</span></td><td><span class="badge todo">Check on discovery calls</span></td></tr>
-        <tr><td><strong>MSK and Kafka cost figures are vendor claims</strong></td><td>Upsell kits</td><td>Confluent claims 40&ndash;70% lower TCO than self-managed Kafka, up to 60% lower data streaming TCO in a white paper, and that cross-AZ networking can be 80&ndash;90% of hosted Kafka infrastructure cost. No MSK-specific percentage was found. The SecurityScorecard figure is a Confluent-published customer case. <span class="src-tag">[S17]</span> <span class="src-tag">[S18]</span> <span class="src-tag">[S21]</span></td><td><span class="badge">Keep the label</span></td></tr>
-        <tr><td><strong>Target list for Kafka without Confluent</strong></td><td>Upsell Opportunities</td><td>No source in this kit identifies which accounts run MSK or Kafka without Confluent. Finding them needs the Confluent or IBM installed-base data.</td><td><span class="badge todo">Ask Confluent / IBM</span></td></tr>
-        <tr><td><strong>Account Mapper weights are a starting guess</strong></td><td>Account Mapper</td><td>Point values are editable in the page script and were not tested against real accounts.</td><td><span class="badge todo">Review with sellers</span></td></tr>
-      </tbody>
-    </table>
-
-    <h3>Sources</h3>
+    <h2>Sources</h2>
+    <p class="lede">Every claim traces to a link.</p>
     <p class="lede" style="margin-bottom:10px">Source keys such as <span class="src-tag">[S1]</span> are used throughout the site. Links open in a new tab. Pages can change, so re-check a claim before quoting it to a customer.</p>
     <table class="sources-table">
       <thead><tr><th>Key</th><th>Source</th><th>Supports</th></tr></thead>
