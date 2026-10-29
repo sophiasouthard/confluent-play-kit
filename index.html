@@ -200,7 +200,7 @@
     #panel-mapper summary { cursor: pointer; font-weight: 600; }
     #panel-mapper details table { margin: 12px 0; }
     @media (max-width: 860px) { .mapper { grid-template-columns: 1fr; } }
-    /* ---------- Personas and Rollout ---------- */
+    /* ---------- Personas ---------- */
     .mini-h { margin: 0 0 6px; font-size: 0.82rem; text-transform: uppercase; letter-spacing: 0.4px; color: var(--muted); }
     .persona-table td, .track td { vertical-align: top; }
     .persona-table td:first-child { white-space: nowrap; }
@@ -265,7 +265,6 @@
       <button class="tab-btn" role="tab" id="tab-upsell"    aria-controls="panel-upsell"    aria-selected="false" data-tab="upsell" tabindex="-1">Upsell Opportunities</button>
       <button class="tab-btn" role="tab" id="tab-mapper"    aria-controls="panel-mapper"    aria-selected="false" data-tab="mapper" tabindex="-1">Account Mapper</button>
       <button class="tab-btn" role="tab" id="tab-personas"  aria-controls="panel-personas"  aria-selected="false" data-tab="personas" tabindex="-1">Personas</button>
-      <button class="tab-btn" role="tab" id="tab-rollout"   aria-controls="panel-rollout"   aria-selected="false" data-tab="rollout" tabindex="-1">Rollout</button>
       <button class="tab-btn" role="tab" id="tab-sources"   aria-controls="panel-sources"   aria-selected="false" data-tab="sources" tabindex="-1">Sources</button>
     </nav>
   </div>
@@ -405,57 +404,13 @@
   <section class="panel" id="panel-personas" role="tabpanel" aria-labelledby="tab-personas" hidden>
     <h2>Personas</h2>
     <p class="lede">Who owns the problem, who feels it most, and who signs.</p>
-    <p><span class="badge hyp">Hypothesis</span> These are educated guesses from the product and market research. Confirm them with sellers before relying on them. Open questions for that conversation are on the Rollout tab.</p>
+    <p><span class="badge hyp">Hypothesis</span> These are educated guesses from the product and market research. Confirm them with sellers before relying on them.</p>
     <div id="persona-matrix"></div>
     <h3>How to use this in a first conversation</h3>
     <div class="grid cols-3">
       <div class="card"><h4 class="mini-h">Business owner</h4><p>Owns the budget and feels the cost. Open with the one-line value sentence, not the technology.</p></div>
       <div class="card"><h4 class="mini-h">Technical buyer</h4><p>Decides whether it fits their setup. Ask for a short introduction rather than pitching; bring in a Confluent or IBM specialist for the details.</p></div>
       <div class="card"><h4 class="mini-h">Most impacted</h4><p>Lives with the problem every day. Their stories make the best discovery questions and the best proof that the pain is real.</p></div>
-    </div>
-  </section>
-
-  <section class="panel" id="panel-rollout" role="tabpanel" aria-labelledby="tab-rollout" hidden>
-    <h2>Rollout</h2>
-    <p class="lede">How to roll the play out across more sellers.</p>
-    <h3>Steps to roll out the play</h3>
-    <ol class="steps roll-steps">
-      <li><strong>Pick the pairing</strong><span>Start with the one or two tools your pilot AEs' customers already run.</span></li>
-      <li><strong>Finalize the kit</strong><span>Confirm the email, value sentence and proof point with Confluent and IBM before anything is sent.</span></li>
-      <li><strong>Run an enablement session</strong><span>Walk the AEs through the Overview, one kit and the Account Mapper. Focus on how they make money, not on how the product works.</span></li>
-      <li><strong>Send to a pilot group</strong><span>A small set of AEs sends the email to accounts that fit the Account Mapper.</span></li>
-      <li><strong>Collect feedback</strong><span>Capture replies, objections and which accounts fit. Update the kit and the scoring weights.</span></li>
-      <li><strong>Repeat with the next pairing</strong><span>Reuse the same kit structure so each new pairing is a copy-and-edit job.</span></li>
-    </ol>
-
-    <h3>Tracking template</h3>
-    <p class="lede" style="margin-bottom:10px">Enter counts as the pilot runs. These are for tracking, not targets, and they are not saved when you leave the page.</p>
-    <div id="track-table"></div>
-
-    <div class="grid cols-2" style="margin-top:22px">
-      <div class="card">
-        <h4 class="mini-h">Ask Confluent / IBM</h4>
-        <ul class="plain-list">
-          <li>Does the Sell With Confluent program apply to our team, and what are its terms? <span class="src-tag">[S2]</span></li>
-          <li>Are co-marketing funds available for an email campaign?</li>
-          <li>Can a Confluent or IBM specialist join the first customer calls?</li>
-          <li>Is there a Splunk or Datadog reference customer, and an approved savings figure?</li>
-          <li>Can the Confluent partner team share the Databricks installed-base account mapping and the active MongoDB joint accounts?</li>
-          <li>Is there an approved list of Amazon MSK and Kafka users who are not yet Confluent customers?</li>
-          <li>Which Confluent migration offers or programs apply to MSK and self-managed Kafka moves?</li>
-          <li>Who reviews and approves the final email and proof sentence?</li>
-        </ul>
-      </div>
-      <div class="card">
-        <h4 class="mini-h">Ask the sellers</h4>
-        <ul class="check-list" id="seller-questions">
-          <li><label><input type="checkbox"> <span>Which of the five pairings do your customers run most?</span></label></li>
-          <li><label><input type="checkbox"> <span>Who do you normally speak to at those accounts, and does the persona table match?</span></label></li>
-          <li><label><input type="checkbox"> <span>Are the Account Mapper signals and weights reasonable?</span></label></li>
-          <li><label><input type="checkbox"> <span>How do you want to quote and fulfil Confluent?</span></label></li>
-        </ul>
-        <p class="check-count" id="seller-q-count">0 of 4 ticked</p>
-      </div>
     </div>
   </section>
 
@@ -791,7 +746,7 @@
   ];
   window.KITS = KITS;
 
-  // Lead plays first, per partner feedback. Order here drives the picker, Personas, Rollout tracker and Account Mapper tie-breaks.
+  // Lead plays first, per partner feedback. Order here drives the picker, Personas and Account Mapper tie-breaks.
   var KIT_ORDER = ['databricks', 'mongodb', 'snowflake', 'splunk', 'datadog'];
   KITS.sort(function (a, b) { return KIT_ORDER.indexOf(a.id) - KIT_ORDER.indexOf(b.id); });
 
@@ -1146,36 +1101,6 @@
         }).join('') +
       '</tbody></table>';
   })();
-
-  /* ---------- Rollout: tracking template (counts only, no targets, not saved) ---------- */
-  var TRACK_METRICS = ['Emails sent', 'Replies', 'Meetings booked', 'Opportunities created'];
-  (function () {
-    var wrap = document.getElementById('track-table');
-    wrap.innerHTML =
-      '<table class="track"><thead><tr><th>Pairing</th>' + TRACK_METRICS.map(function (m) { return '<th>' + esc(m) + '</th>'; }).join('') + '</tr></thead><tbody>' +
-        KITS.map(function (k) {
-          return '<tr><td><strong>' + esc(k.name) + '</strong></td>' + TRACK_METRICS.map(function (m, i) {
-            return '<td><input type="number" min="0" inputmode="numeric" aria-label="' + esc(k.name + ' - ' + m) + '" data-track-row="' + k.id + '" data-track-col="' + i + '"></td>';
-          }).join('') + '</tr>';
-        }).join('') +
-        '<tr class="total"><td><strong>Total</strong></td>' + TRACK_METRICS.map(function (m, i) { return '<td data-track-total="' + i + '">0</td>'; }).join('') + '</tr>' +
-      '</tbody></table>';
-    wrap.addEventListener('input', function (e) {
-      if (!e.target.matches('[data-track-col]')) return;
-      TRACK_METRICS.forEach(function (m, i) {
-        var sum = 0;
-        Array.prototype.forEach.call(wrap.querySelectorAll('[data-track-col="' + i + '"]'), function (inp) { sum += Math.max(0, parseInt(inp.value, 10) || 0); });
-        wrap.querySelector('[data-track-total="' + i + '"]').textContent = sum;
-      });
-    });
-  })();
-
-  /* ---------- Rollout: seller questions counter ---------- */
-  document.getElementById('seller-questions').addEventListener('change', function () {
-    var all = document.querySelectorAll('#seller-questions input').length;
-    var on = document.querySelectorAll('#seller-questions input:checked').length;
-    document.getElementById('seller-q-count').textContent = on + ' of ' + all + ' ticked';
-  });
 
 
 
