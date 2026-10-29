@@ -147,7 +147,9 @@
       .site-header .inner { padding: 18px 16px 0; }
     }
     /* ---------- Play Library ---------- */
-    .kit-picker { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin-bottom: 20px; }
+    .kit-picker { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 12px; margin-bottom: 20px; }
+    .kit-pick .badge { margin-left: 6px; vertical-align: 1px; }
+    .badge.lead { background: var(--accent); color: #fff; }
     .kit-pick {
       appearance: none; text-align: left; font: inherit; cursor: pointer; color: var(--text);
       background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 12px 14px;
@@ -238,8 +240,8 @@
 
     @media print {
       body.print-brief .panel { display: none !important; }
-      body.print-brief #panel-library { display: block !important; }
-      body.print-brief .kit-picker, body.print-brief .kit-head .btn, body.print-brief #panel-library > h2, body.print-brief #panel-library > .lede { display: none !important; }
+      body.print-brief .panel.print-target { display: block !important; }
+      body.print-brief .kit-picker, body.print-brief .kit-head .btn, body.print-brief #panel-library > h2, body.print-brief #panel-library > .lede, body.print-brief #panel-upsell > h2, body.print-brief #panel-upsell > .lede, body.print-brief #panel-upsell > .callout, body.print-brief #panel-upsell > .grid { display: none !important; }
       body.print-brief .subpanel { display: none !important; }
       body.print-brief .subpanel.brief-panel { display: block !important; }
       body { background: #fff; font-size: 12px; }
@@ -260,6 +262,7 @@
     <nav class="tabbar" role="tablist" aria-label="Main sections">
       <button class="tab-btn" role="tab" id="tab-overview"  aria-controls="panel-overview"  aria-selected="true"  data-tab="overview">Overview</button>
       <button class="tab-btn" role="tab" id="tab-library"   aria-controls="panel-library"   aria-selected="false" data-tab="library" tabindex="-1">Play Library</button>
+      <button class="tab-btn" role="tab" id="tab-upsell"    aria-controls="panel-upsell"    aria-selected="false" data-tab="upsell" tabindex="-1">Upsell Opportunities</button>
       <button class="tab-btn" role="tab" id="tab-mapper"    aria-controls="panel-mapper"    aria-selected="false" data-tab="mapper" tabindex="-1">Account Mapper</button>
       <button class="tab-btn" role="tab" id="tab-personas"  aria-controls="panel-personas"  aria-selected="false" data-tab="personas" tabindex="-1">Personas</button>
       <button class="tab-btn" role="tab" id="tab-rollout"   aria-controls="panel-rollout"   aria-selected="false" data-tab="rollout" tabindex="-1">Rollout</button>
@@ -275,7 +278,7 @@
     <p class="lede">Why this play works, and what each kit contains.</p>
     <div class="hero">
       <h3>One simple play, repeated for each vendor your customers already run.</h3>
-      <p>Each kit gives sellers one trigger, one question, three benefits, one proof point and a short email for a vendor your customers already run: Splunk, Datadog, Snowflake and Databricks.</p>
+      <p>Each kit gives sellers one trigger, one question, three benefits, one proof point and a short email for a vendor your customers already run: Databricks, MongoDB, Snowflake, Splunk and Datadog. Databricks and MongoDB lead, based on partner feedback about where the joint motion is strongest. The Upsell Opportunities tab adds two plays for customers who already run Kafka but do not yet use Confluent.</p>
     </div>
 
     <h3>Why now</h3>
@@ -290,8 +293,26 @@
       </div>
     </div>
 
-    <h3>The four pairings</h3>
+    <h3>The five pairings</h3>
     <div class="grid cols-2">
+      <div class="card pair-card">
+        <h4>Confluent + Databricks <span class="badge lead">Lead play</span></h4>
+        <p class="trigger">Trigger: operational data that is not in the lakehouse in time for AI.</p>
+        <p class="value">Stream operational data into Delta Lake with governance through Unity Catalog. <span class="src-tag">[S6]</span> <span class="src-tag">[S22]</span></p>
+        <a class="btn ghost" href="#library/databricks">Open Play Library</a>
+      </div>
+      <div class="card pair-card">
+        <h4>Confluent + MongoDB <span class="badge lead">Lead play</span></h4>
+        <p class="trigger">Trigger: teams running their own Kafka connectors to feed Atlas, and AI features that need fresh data.</p>
+        <p class="value">Fully managed Atlas connectors plus in-flight processing, so Atlas gets current, clean data. <span class="src-tag">[S13]</span> <span class="src-tag">[S14]</span></p>
+        <a class="btn ghost" href="#library/mongodb">Open Play Library</a>
+      </div>
+      <div class="card pair-card">
+        <h4>Confluent + Snowflake</h4>
+        <p class="trigger">Trigger: batch pipelines that leave the warehouse behind the business.</p>
+        <p class="value">Stream operational data into Snowflake as tables without hand-built ETL. <span class="src-tag">[S5]</span></p>
+        <a class="btn ghost" href="#library/snowflake">Open Play Library</a>
+      </div>
       <div class="card pair-card">
         <h4>Confluent + Splunk</h4>
         <p class="trigger">Trigger: ingest-based licensing cost; Cisco now owns Splunk. <span class="src-tag">[S3]</span></p>
@@ -304,17 +325,21 @@
         <p class="value">Control telemetry before it reaches the observability tool, and reuse it across teams. <span class="src-tag">[S4]</span></p>
         <a class="btn ghost" href="#library/datadog">Open Play Library</a>
       </div>
+    </div>
+
+    <h3>Upsell plays</h3>
+    <div class="grid cols-2">
       <div class="card pair-card">
-        <h4>Confluent + Snowflake</h4>
-        <p class="trigger">Trigger: batch pipelines that leave the warehouse behind the business.</p>
-        <p class="value">Stream operational data into Snowflake as tables without hand-built ETL. <span class="src-tag">[S5]</span></p>
-        <a class="btn ghost" href="#library/snowflake">Open Play Library</a>
+        <h4>Amazon MSK customers</h4>
+        <p class="trigger">Trigger: node-based pricing, over-provisioned clusters and cross-AZ network cost. <span class="src-tag">[S17]</span></p>
+        <p class="value">Move teams already running Kafka on MSK to a fully managed platform, with a documented migration path. <span class="src-tag">[S19]</span></p>
+        <a class="btn ghost" href="#upsell/msk">Open Upsell Opportunities</a>
       </div>
       <div class="card pair-card">
-        <h4>Confluent + Databricks</h4>
-        <p class="trigger">Trigger: operational data that is not in the lakehouse in time for AI.</p>
-        <p class="value">Stream operational data into Delta Lake with governance through Unity Catalog. <span class="src-tag">[S6]</span></p>
-        <a class="btn ghost" href="#library/databricks">Open Play Library</a>
+        <h4>Kafka customers without Confluent</h4>
+        <p class="trigger">Trigger: a growing Kafka footprint that the team spends more time running than building on. <span class="src-tag">[S18]</span></p>
+        <p class="value">Reach open-source and self-managed Kafka teams who do not yet use Confluent. <span class="src-tag">[S19]</span></p>
+        <a class="btn ghost" href="#upsell/kafka">Open Upsell Opportunities</a>
       </div>
     </div>
 
@@ -334,9 +359,25 @@
 
   <section class="panel" id="panel-library" role="tabpanel" aria-labelledby="tab-library" hidden>
     <h2>Play Library</h2>
-    <p class="lede">One kit per pairing: Brief, Email, Talk Track, Personas, Account Checklist.</p>
+    <p class="lede">One kit per pairing: Brief, Email, Talk Track, Personas, Account Checklist. Databricks and MongoDB are listed first as the lead plays.</p>
     <div class="kit-picker" id="kit-picker" aria-label="Choose a pairing"></div>
     <div id="kit-view"></div>
+  </section>
+
+  <section class="panel" id="panel-upsell" role="tabpanel" aria-labelledby="tab-upsell" hidden>
+    <h2>Upsell Opportunities</h2>
+    <p class="lede">Customers who already run Kafka but do not yet use Confluent. Same kit format as the Play Library: Brief, Email, Talk Track, Personas, Account Checklist.</p>
+    <div class="callout warn">
+      <strong>Check before you reach out</strong>
+      These plays only fit accounts that are not already Confluent customers. Ask the Confluent or IBM account team to confirm that before sending anything. All cost figures in these kits are Confluent's own claims and are labeled that way.
+    </div>
+    <div class="grid cols-3" style="margin-bottom:20px">
+      <div class="card"><h4 class="mini-h">Amazon MSK</h4><p>Teams already on AWS who chose a hosted Kafka service. The pitch is cost, less cluster work and a migration path that does not need a big-bang cutover. <span class="src-tag">[S17]</span> <span class="src-tag">[S19]</span></p></div>
+      <div class="card"><h4 class="mini-h">Self-managed Kafka</h4><p>Teams running open-source Kafka on their own infrastructure. The pitch is the people and infrastructure cost of running it, plus the managed services around it. <span class="src-tag">[S18]</span></p></div>
+      <div class="card"><h4 class="mini-h">How to find them</h4><p><span class="badge hyp">Hypothesis</span> Ask the Confluent or IBM team for an installed-base list and a Kafka-user list, then remove existing Confluent customers. Check your own CRM notes for MSK or Kafka mentions.</p></div>
+    </div>
+    <div class="kit-picker" id="upsell-picker" aria-label="Choose an upsell play"></div>
+    <div id="upsell-view"></div>
   </section>
 
   <section class="panel" id="panel-mapper" role="tabpanel" aria-labelledby="tab-mapper" hidden>
@@ -354,7 +395,7 @@
       </div>
       <div id="map-results" aria-live="polite"></div>
     </div>
-    <div class="callout warn"><strong>A starting point, not a qualification</strong>The ranking only tells you which conversation to open first. Datadog and Splunk plays have no published savings figure, so no number is quoted for them.</div>
+    <div class="callout warn"><strong>A starting point, not a qualification</strong>The ranking only tells you which conversation to open first. Splunk, Datadog and MongoDB plays have no published savings figure, so no number is quoted for them.</div>
     <details class="card">
       <summary>How the score works</summary>
       <div id="map-rules-body"></div>
@@ -399,13 +440,16 @@
           <li>Are co-marketing funds available for an email campaign?</li>
           <li>Can a Confluent or IBM specialist join the first customer calls?</li>
           <li>Is there a Splunk or Datadog reference customer, and an approved savings figure?</li>
+          <li>Can the Confluent partner team share the Databricks installed-base account mapping and the active MongoDB joint accounts?</li>
+          <li>Is there an approved list of Amazon MSK and Kafka users who are not yet Confluent customers?</li>
+          <li>Which Confluent migration offers or programs apply to MSK and self-managed Kafka moves?</li>
           <li>Who reviews and approves the final email and proof sentence?</li>
         </ul>
       </div>
       <div class="card">
         <h4 class="mini-h">Ask the sellers</h4>
         <ul class="check-list" id="seller-questions">
-          <li><label><input type="checkbox"> <span>Which of the four pairings do your customers run most?</span></label></li>
+          <li><label><input type="checkbox"> <span>Which of the five pairings do your customers run most?</span></label></li>
           <li><label><input type="checkbox"> <span>Who do you normally speak to at those accounts, and does the persona table match?</span></label></li>
           <li><label><input type="checkbox"> <span>Are the Account Mapper signals and weights reasonable?</span></label></li>
           <li><label><input type="checkbox"> <span>How do you want to quote and fulfil Confluent?</span></label></li>
@@ -430,6 +474,12 @@
         <tr><td><strong>30&ndash;50% is a vendor claim</strong></td><td>Snowflake and Databricks kits</td><td>Confluent states Tableflow "typically" lowers ingestion cost by 30&ndash;50%. It is Confluent's own figure and is labeled "Vendor claim" wherever it appears. <span class="src-tag">[S9]</span></td><td><span class="badge">Keep the label</span></td></tr>
         <tr><td><strong>Unity Catalog on a private network</strong></td><td>Databricks kit</td><td>Tableflow does not integrate with Unity Catalogs deployed on private networks; the workspace must be reachable over the public internet. Docs describe a manual registration alternative. <span class="src-tag">[S12]</span></td><td><span class="badge todo">Ask on discovery calls</span></td></tr>
         <tr><td><strong>Splunk + Datadog combined play is adapted wording</strong></td><td>Account Mapper</td><td>Confluent describes reusing observability data across tools and sending SIEM data to multiple destinations. No source covers Splunk and Datadog together, so that sentence is an extension of those general statements. <span class="src-tag">[S4]</span> <span class="src-tag">[S7]</span></td><td><span class="badge todo">Have Confluent review</span></td></tr>
+        <tr><td><strong>Lead-play ranking is partner feedback</strong></td><td>Overview, Play Library, Databricks and MongoDB kits</td><td>Databricks is described as Confluent's most active ISV partner, with joint initiatives including installed-base account mapping. MongoDB is described as the most active ISV on both technical and commercial fronts. This came from Confluent partner feedback and is not a published source.</td><td><span class="badge todo">Confirm with Confluent partner team</span></td></tr>
+        <tr><td><strong>Snowflake joint motion is lower</strong></td><td>Snowflake kit, Overview</td><td>Partner feedback says Snowflake has been less active because Datastream was used as a workaround for Kafka ingestion. The kit stays in the Play Library but is ranked below Databricks and MongoDB.</td><td><span class="badge todo">Confirm with Confluent partner team</span></td></tr>
+        <tr><td><strong>No MongoDB savings figure</strong></td><td>MongoDB kit</td><td>Confluent and MongoDB describe the connectors and the AI use case but publish no savings percentage. The kit quotes none. <span class="src-tag">[S13]</span> <span class="src-tag">[S14]</span></td><td><span class="badge todo">Ask for a reference customer</span></td></tr>
+        <tr><td><strong>Managed MongoDB connector exposes fewer options</strong></td><td>MongoDB kit</td><td>Confluent's announcement says the fully managed Atlas connectors expose a subset of the self-hosted connector options. That post may be dated, so check the current connector docs before promising a specific setting. <span class="src-tag">[S13]</span></td><td><span class="badge todo">Check on discovery calls</span></td></tr>
+        <tr><td><strong>MSK and Kafka cost figures are vendor claims</strong></td><td>Upsell kits</td><td>Confluent claims 40&ndash;70% lower TCO than self-managed Kafka, up to 60% lower data streaming TCO in a white paper, and that cross-AZ networking can be 80&ndash;90% of hosted Kafka infrastructure cost. No MSK-specific percentage was found. The SecurityScorecard figure is a Confluent-published customer case. <span class="src-tag">[S17]</span> <span class="src-tag">[S18]</span> <span class="src-tag">[S21]</span></td><td><span class="badge">Keep the label</span></td></tr>
+        <tr><td><strong>Target list for Kafka without Confluent</strong></td><td>Upsell Opportunities</td><td>No source in this kit identifies which accounts run MSK or Kafka without Confluent. Finding them needs the Confluent or IBM installed-base data.</td><td><span class="badge todo">Ask Confluent / IBM</span></td></tr>
         <tr><td><strong>Account Mapper weights are a starting guess</strong></td><td>Account Mapper</td><td>Point values are editable in the page script and were not tested against real accounts.</td><td><span class="badge todo">Review with sellers</span></td></tr>
       </tbody>
     </table>
@@ -674,7 +724,8 @@
       ]
     },
     {
-      id: 'databricks', name: 'Databricks',
+      id: 'databricks', name: 'Databricks', lead: true,
+      partner: 'Partner feedback: Databricks is Confluent\'s most active ISV partner, with joint initiatives that include installed-base account mapping. Ask the Confluent partner team for the mapped accounts before you reach out.',
       tagline: 'Land operational data in Databricks as governed Delta Lake tables.',
       trigger: 'Operational data is not in the lakehouse in time for AI and analytics work.',
       trigSrc: ['S6'],
@@ -715,9 +766,148 @@
         'The customer is on AWS or Azure object storage',
         'The Databricks workspace is reachable over the public internet'
       ]
+    },
+    {
+      id: 'mongodb', name: 'MongoDB', lead: true,
+      partner: 'Partner feedback: MongoDB is Confluent\'s most active ISV partner on both the technical and commercial fronts. Ask the Confluent partner team which accounts are active joint accounts before you reach out.',
+      tagline: 'Keep MongoDB Atlas fed with current, clean data, and make Atlas changes available to the rest of the business.',
+      trigger: 'Teams run their own Kafka connectors to move data in and out of MongoDB, and new AI features need fresher data in Atlas.',
+      trigSrc: ['S13', 'S15'],
+      question: 'Is the data in MongoDB Atlas as current as your applications and AI features need it to be, without your team running the connectors?',
+      benefits: [
+        'Fully managed Atlas source and sink connectors instead of connectors your team runs',
+        'Data cleaned and enriched in flight before it lands in Atlas, including for vector search and GenAI',
+        'Changes in Atlas available to other teams and systems as streams'
+      ],
+      proof: { kind: 'Qualitative', text: 'Fully managed MongoDB Atlas source and sink connectors are generally available in Confluent Cloud. MongoDB\'s own documentation recommends Confluent Cloud to host Kafka and the MongoDB Kafka Connector, and Confluent has joined MongoDB\'s AI Applications Program.', src: ['S13', 'S15', 'S14'] },
+      gap: 'No MongoDB savings percentage was found. Do not quote one. The managed connectors expose a subset of the self-hosted options, so confirm any setting the customer needs.',
+      ask: 'A short conversation about how data moves in and out of Atlas today.',
+      value: 'Confluent keeps [client name]\'s MongoDB Atlas supplied with current, processed data through fully managed connectors, so applications and AI features work from fresh data without the team running the pipes.',
+      email: {
+        subject: 'Fresher data in MongoDB Atlas without running the connectors',
+        body: 'Hi [client name],\n\nIs the data in MongoDB Atlas as current as your applications and AI features need it to be?\n\nWe can help with Confluent, now part of IBM. Confluent offers fully managed MongoDB Atlas source and sink connectors, and it can clean and enrich data in flight before it lands in Atlas.\n\nSome of the benefits organizations look for include:\n\u2022 Managed connectors instead of connectors your team has to run\n\u2022 Processed, governed data feeding Atlas, including for vector search and GenAI\n\u2022 Changes in Atlas available to other teams and systems\n\nWe do not quote savings numbers up front. We would rather look at how data moves in and out of Atlas for you and show what is realistic.\n\nWould you be open to a short conversation about how data reaches Atlas today?\n\nThanks,\n\n[your name]\n[your title]'
+      },
+      discovery: [
+        'How does data get into and out of MongoDB today, and who runs those connectors?',
+        'Are any AI or vector search features waiting on fresher data in Atlas?',
+        'Do other teams need the changes that happen in Atlas?',
+        'What happens to the pipeline when volume spikes or a connector fails?'
+      ],
+      objections: [
+        { say: '"We use MongoDB Atlas Stream Processing."', reply: 'It processes streams inside MongoDB, and MongoDB\'s docs say it still needs a hosted Kafka cluster, with Confluent Cloud listed as a hosting option. A specialist can show where each one fits.' },
+        { say: '"We already run the open-source MongoDB Kafka connector."', reply: 'MongoDB recommends hosting it on Confluent Cloud, and the fully managed version removes the work of running it. The managed version exposes a subset of options, so confirm the settings you need.' },
+        { say: '"What savings should we expect?"', reply: 'There is no published figure to quote. We would look at your own data flows with a Confluent specialist.' }
+      ],
+      personas: [
+        ['Business owner', 'VP Engineering or CTO (owns the application and AI roadmap)'],
+        ['Technical buyer', 'Data platform lead or MongoDB architect'],
+        ['Most impacted', 'Application and data engineers who run the connectors']
+      ],
+      checklist: [
+        'Customer runs MongoDB Atlas in production',
+        'Data moves in or out of MongoDB through Kafka or custom pipelines',
+        'An AI, vector search or GenAI feature is planned on Atlas',
+        'Other teams want the same operational data',
+        'You know whether the account is an active joint Confluent and MongoDB account'
+      ]
     }
   ];
   window.KITS = KITS;
+
+  // Lead plays first, per partner feedback. Order here drives the picker, Personas, Rollout tracker and Account Mapper tie-breaks.
+  var KIT_ORDER = ['databricks', 'mongodb', 'snowflake', 'splunk', 'datadog'];
+  KITS.sort(function (a, b) { return KIT_ORDER.indexOf(a.id) - KIT_ORDER.indexOf(b.id); });
+
+  /* ---------- Upsell kits (same shape as KITS; these are for accounts that run Kafka but not Confluent) ---------- */
+  var UPSELL = [
+    {
+      id: 'msk', name: 'Amazon MSK', title: 'Upsell: Confluent for Amazon MSK customers',
+      tagline: 'Move teams already running Kafka on Amazon MSK to a fully managed platform, without a big-bang cutover.',
+      trigger: 'MSK uses node-based pricing, which Confluent says leads to over-provisioning for peak load, and cross-AZ network traffic can become a hidden cost.',
+      trigSrc: ['S17'],
+      question: 'Is your team still spending time sizing, upgrading and rebalancing Kafka clusters, and is the bill higher than the traffic you actually use?',
+      benefits: [
+        'Lower cost of running Kafka (Confluent\'s claim, to be modelled with your traffic)',
+        'Less cluster sizing, upgrade and rebalancing work for the platform team',
+        'A migration path that keeps topics and consumer offsets in sync'
+      ],
+      proof: { kind: 'Vendor claim', text: 'Confluent claims it cuts total cost of ownership for self-managed Kafka by 40-70%, and says cross-AZ networking can be 80-90% of hosted Kafka infrastructure cost. It also publishes a customer case: SecurityScorecard moved off MSK and reports saving over $1 million.', src: ['S17', 'S21'] },
+      gap: 'The 40-70% figure compares against self-managed Kafka, not MSK specifically. No MSK-only percentage was found. Label every figure as Confluent\'s and model the customer\'s own traffic.',
+      ask: 'A short conversation about how your MSK clusters are sized and run today.',
+      value: 'Confluent lets [client name] move the Kafka it already runs on Amazon MSK to a fully managed platform, so the team spends less time on clusters and the bill follows real traffic.',
+      email: {
+        subject: 'Running Kafka on Amazon MSK without running the clusters',
+        body: 'Hi [client name],\n\nIs your team still spending time sizing, upgrading and rebalancing the Kafka clusters you run on Amazon MSK?\n\nWe can help with Confluent, now part of IBM. Confluent is a fully managed Kafka platform, and it documents a migration path from MSK that keeps topics and consumer offsets in sync, so teams do not need a big-bang cutover.\n\nSome of the benefits organizations look for include:\n\u2022 Less time spent sizing, upgrading and rebalancing clusters\n\u2022 A bill that follows real traffic instead of provisioned capacity\n\u2022 Managed connectors and governance on the Kafka you already use\n\nConfluent publishes cost comparisons against hosted Kafka such as MSK. Those are Confluent\'s own figures, and we would rather model your own traffic than quote them.\n\nWould you be open to a short conversation about how your MSK clusters are run today?\n\nThanks,\n\n[your name]\n[your title]'
+      },
+      discovery: [
+        'How many MSK clusters do you run, and who sizes them?',
+        'How much of the AWS Kafka bill is cross-AZ traffic or capacity you do not use?',
+        'How long does a version upgrade take, and who does it?',
+        'Do other teams want connectors, governance or stream processing on the same data?'
+      ],
+      objections: [
+        { say: '"MSK is already part of our AWS agreement."', reply: 'Ask the Confluent or IBM team whether buying through a cloud marketplace can count toward a commit. That is not confirmed in this kit, so check it before you promise anything.' },
+        { say: '"Migrating Kafka is too risky."', reply: 'Confluent documents Cluster Linking, which copies topics and syncs consumer offsets, and any Kafka 3.0+ cluster including MSK can be a source. It also offers an open source tool called KCP that scans an existing environment and plans the migration.' },
+        { say: '"MSK is good enough for us."', reply: 'It may be. The question is whether the team time and network cost are worth it. A Confluent specialist can model that with your own traffic.' }
+      ],
+      personas: [
+        ['Business owner', 'VP Engineering or Head of Cloud (owns the AWS bill)'],
+        ['Technical buyer', 'Platform or data streaming lead'],
+        ['Most impacted', 'Engineers who size, upgrade and rebalance MSK clusters']
+      ],
+      checklist: [
+        'Customer runs Amazon MSK in production',
+        'Several clusters, or traffic that is growing fast',
+        'The team complains about sizing, upgrades or the Kafka bill',
+        'Other teams want connectors, governance or stream processing',
+        'Customer is not already a Confluent customer (confirm with Confluent / IBM)'
+      ]
+    },
+    {
+      id: 'kafka', name: 'Kafka without Confluent', title: 'Upsell: Confluent for Kafka customers',
+      tagline: 'Reach teams running open-source or self-managed Kafka who do not yet use Confluent.',
+      trigger: 'As a Kafka footprint grows, the team spends more time running the platform than building on it.',
+      trigSrc: ['S18'],
+      question: 'How much of your Kafka team\'s time goes into running the platform instead of building on it?',
+      benefits: [
+        'Less time spent running brokers, upgrades and capacity',
+        'Managed connectors and governance instead of building them in-house',
+        'A way to link existing clusters to Confluent Cloud without a rebuild'
+      ],
+      proof: { kind: 'Vendor claim', text: 'Confluent claims 40-70% lower total cost of ownership than self-managed Kafka and, in a white paper, up to 60% lower data streaming TCO. Both are Confluent\'s own figures.', src: ['S17', 'S18'] },
+      gap: 'Label the figures as Confluent\'s every time. Cluster Linking needs a Kafka 3.0+ source that Confluent Cloud can reach, so qualify the version and network early.',
+      ask: 'A short conversation about how your Kafka is run today.',
+      value: 'Confluent lets [client name] offload running Kafka, so the team can spend its time on the projects that differentiate the business, and bring existing clusters across without a rebuild.',
+      email: {
+        subject: 'Spending less time running Kafka',
+        body: 'Hi [client name],\n\nHow much of your team\'s time goes into running Kafka rather than building on it?\n\nWe can help with Confluent, now part of IBM. Confluent is a fully managed data streaming platform, and its tools can link an existing Kafka cluster to Confluent Cloud and copy topics and consumer offsets across.\n\nSome of the benefits organizations look for include:\n\u2022 Less time spent on brokers, upgrades and capacity\n\u2022 Managed connectors and governance instead of in-house builds\n\u2022 A migration path that does not require a rebuild\n\nConfluent publishes cost comparisons against self-managed Kafka. Those are Confluent\'s own figures, and we would rather look at your environment than quote them.\n\nWould you be open to a short conversation about how your Kafka is run today?\n\nThanks,\n\n[your name]\n[your title]'
+      },
+      discovery: [
+        'Which Kafka version do you run, and where does it run?',
+        'How many people look after it, and what else could they be working on?',
+        'What happens at the next major upgrade?',
+        'Are connectors and schemas maintained by hand?'
+      ],
+      objections: [
+        { say: '"Open source Kafka is free."', reply: 'The software is. The cost is people, infrastructure and downtime risk, which is what Confluent\'s comparisons cover. Those are vendor figures, so we would test them with your numbers.' },
+        { say: '"We cannot move everything to the cloud."', reply: 'Confluent documents linking self-managed and Confluent Cloud clusters for hybrid deployments. A specialist can walk through what fits.' },
+        { say: '"Moving would mean rewriting our applications."', reply: 'Confluent\'s migration docs describe copying topics and syncing consumer offsets so clients can move over. A specialist can confirm the steps for your setup.' }
+      ],
+      personas: [
+        ['Business owner', 'VP Engineering or CTO'],
+        ['Technical buyer', 'Head of platform or data streaming'],
+        ['Most impacted', 'Engineers who operate Kafka day to day']
+      ],
+      checklist: [
+        'Customer runs self-managed or open-source Kafka',
+        'A small team spends a large share of its time on operations',
+        'Kafka version is 3.0 or later, or an upgrade is planned',
+        'Connectors, schemas or governance are built and maintained by hand',
+        'Customer is not already a Confluent customer (confirm with Confluent / IBM)'
+      ]
+    }
+  ];
+  window.UPSELL = UPSELL;
 
   function esc(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
   function srcTags(a) { return (a || []).map(function (k) { return '<span class="src-tag">[' + k + ']</span>'; }).join(' '); }
@@ -725,8 +915,10 @@
 
   var picker = document.getElementById('kit-picker');
   var kitView = document.getElementById('kit-view');
+  var upsellPicker = document.getElementById('upsell-picker');
+  var upsellView = document.getElementById('upsell-view');
 
-  function renderKit(k) {
+  function renderKit(k, view, isUpsell) {
     var p = function (suffix) { return k.id + '-' + suffix; };
     var tabs = [['brief', 'Brief'], ['email', 'Email'], ['talk', 'Talk Track'], ['personas', 'Personas'], ['check', 'Account Checklist']];
     var list = tabs.map(function (t, i) {
@@ -740,6 +932,7 @@
         '<div><h4>Three benefits</h4><ul>' + lis(k.benefits) + '</ul></div>' +
         '<div><h4>Proof point <span class="badge ' + (k.proof.kind === 'Qualitative' ? '' : 'hyp') + '">' + esc(k.proof.kind) + '</span></h4><p>' + esc(k.proof.text) + ' ' + srcTags(k.proof.src) + '</p><p class="gap-note">' + esc(k.gap) + '</p></div>' +
         '<div><h4>The soft ask</h4><p>' + esc(k.ask) + '</p></div>' +
+        (k.partner ? '<div class="wide"><div class="callout"><strong>Why this is a lead play</strong>' + esc(k.partner) + '</div></div>' : '') +
         '<div class="wide"><h4>Value sentence</h4><p id="' + p('value') + '">' + esc(k.value) + '</p><div class="copy-row"><button class="btn ghost" data-copy="#' + p('value') + '">Copy value sentence</button></div></div>' +
       '</div></div></div>';
 
@@ -777,12 +970,12 @@
         '<p class="check-count" data-check-count>0 of ' + k.checklist.length + ' ticked</p>' +
       '</div>';
 
-    kitView.innerHTML =
-      '<div class="kit-head"><h3>Confluent + ' + esc(k.name) + '</h3><button class="btn ghost" data-print-brief>Print brief</button></div>' +
+    view.innerHTML =
+      '<div class="kit-head"><h3>' + (isUpsell ? esc(k.title) : 'Confluent + ' + esc(k.name)) + '</h3><button class="btn ghost" data-print-brief>Print brief</button></div>' +
       '<p class="lede">' + esc(k.tagline) + '</p>' +
       '<div class="subtabs" data-subtabs><div class="subtab-list" role="tablist" aria-label="' + esc(k.name) + ' kit sections">' + list + '</div>' +
       brief + email + talk + personas + check + '</div>';
-    initSubtabs(kitView.querySelector('[data-subtabs]'));
+    initSubtabs(view.querySelector('[data-subtabs]'));
   }
 
   function selectKit(id, updateHash) {
@@ -790,34 +983,58 @@
     Array.prototype.forEach.call(picker.querySelectorAll('.kit-pick'), function (b) {
       b.setAttribute('aria-pressed', b.dataset.kit === k.id ? 'true' : 'false');
     });
-    renderKit(k);
+    renderKit(k, kitView, false);
     if (updateHash) history.replaceState(null, '', '#library/' + k.id);
   }
   window.selectKit = selectKit;
 
-  picker.innerHTML = KITS.map(function (k) {
-    return '<button class="kit-pick" data-kit="' + k.id + '" aria-pressed="false"><strong>' + esc(k.name) + '</strong><span>' + esc(k.tagline) + '</span></button>';
-  }).join('');
+  function selectUpsell(id, updateHash) {
+    var k = UPSELL.filter(function (x) { return x.id === id; })[0] || UPSELL[0];
+    Array.prototype.forEach.call(upsellPicker.querySelectorAll('.kit-pick'), function (b) {
+      b.setAttribute('aria-pressed', b.dataset.kit === k.id ? 'true' : 'false');
+    });
+    renderKit(k, upsellView, true);
+    if (updateHash) history.replaceState(null, '', '#upsell/' + k.id);
+  }
+  window.selectUpsell = selectUpsell;
+
+  function pickerHtml(list) {
+    return list.map(function (k) {
+      return '<button class="kit-pick" data-kit="' + k.id + '" aria-pressed="false"><strong>' + esc(k.name) + (k.lead ? '<span class="badge lead">Lead</span>' : '') + '</strong><span>' + esc(k.tagline) + '</span></button>';
+    }).join('');
+  }
+  picker.innerHTML = pickerHtml(KITS);
+  upsellPicker.innerHTML = pickerHtml(UPSELL);
   picker.addEventListener('click', function (e) {
     var b = e.target.closest('.kit-pick');
     if (b) selectKit(b.dataset.kit, true);
   });
+  upsellPicker.addEventListener('click', function (e) {
+    var b = e.target.closest('.kit-pick');
+    if (b) selectUpsell(b.dataset.kit, true);
+  });
 
-  kitView.addEventListener('change', function (e) {
-    if (!e.target.matches('[data-kit-check]')) return;
-    var total = kitView.querySelectorAll('[data-kit-check]').length;
-    var n = kitView.querySelectorAll('[data-kit-check]:checked').length;
-    kitView.querySelector('[data-check-count]').textContent = n + ' of ' + total + ' ticked';
+  [kitView, upsellView].forEach(function (view) {
+    view.addEventListener('change', function (e) {
+      if (!e.target.matches('[data-kit-check]')) return;
+      var total = view.querySelectorAll('[data-kit-check]').length;
+      var n = view.querySelectorAll('[data-kit-check]:checked').length;
+      view.querySelector('[data-check-count]').textContent = n + ' of ' + total + ' ticked';
+    });
   });
 
   document.addEventListener('click', function (e) {
     if (!e.target.closest('[data-print-brief]')) return;
+    var panel = e.target.closest('.panel');
+    if (panel) panel.classList.add('print-target');
     document.body.classList.add('print-brief');
     window.print();
     document.body.classList.remove('print-brief');
+    if (panel) panel.classList.remove('print-target');
   });
 
-  selectKit('splunk', false);
+  selectKit('databricks', false);
+  selectUpsell('msk', false);
 
   /* ---------- Account Mapper ---------- */
   // Scoring rules live here. Change a number or a phrase and the tab (including the rules table) updates itself.
@@ -827,19 +1044,23 @@
     splunk: 'runs Splunk today',
     datadog: 'runs Datadog today',
     snowflake: 'runs Snowflake today',
-    databricks: 'runs Databricks today'
+    databricks: 'runs Databricks today',
+    mongodb: 'runs MongoDB Atlas today'
   };
-  function same(v) { return { splunk: v, datadog: v, snowflake: v, databricks: v }; }
+  function same(v) { return { splunk: v, datadog: v, snowflake: v, databricks: v, mongodb: v }; }
   var MAP_QUALS = [
     { id: 'cost', label: 'Complains about log, security-data or observability cost',
       points: { splunk: 2, datadog: 2 },
       why: { splunk: 'feels the cost of sending data into Splunk', datadog: 'feels rising observability bills' } },
     { id: 'ai', label: 'Is building AI or agents',
-      points: { snowflake: 2, databricks: 2 },
-      why: { snowflake: 'AI projects need fresh data in Snowflake', databricks: 'AI projects need fresh data in Databricks' } },
+      points: { snowflake: 2, databricks: 2, mongodb: 2 },
+      why: { snowflake: 'AI projects need fresh data in Snowflake', databricks: 'AI projects need fresh data in Databricks', mongodb: 'AI and vector search features need fresh data in Atlas' } },
     { id: 'stale', label: 'Reports or dashboards run on data that is hours or a day old',
       points: { snowflake: 2, databricks: 2 },
       why: { snowflake: 'warehouse data arrives late', databricks: 'lakehouse data arrives late' } },
+    { id: 'joint', label: 'Is an active joint account with Confluent and Databricks or MongoDB',
+      points: { databricks: 2, mongodb: 2 },
+      why: { databricks: 'is a mapped or active Databricks joint account', mongodb: 'is an active MongoDB joint account' } },
     { id: 'ibm', label: 'Already buys IBM products',
       points: same(1), why: same('already an IBM account') },
   ];
@@ -882,6 +1103,7 @@
     var techs = Array.prototype.map.call(mapForm.querySelectorAll('[data-map-tech]:checked'), function (c) { return c.dataset.mapTech; });
     var quals = Array.prototype.map.call(mapForm.querySelectorAll('[data-map-qual]:checked'), function (c) { return c.dataset.mapQual; });
     var rows = KITS.filter(function (k) { return techs.indexOf(k.id) > -1; }).map(function (k, i) {
+      // i follows KITS order, so Databricks and MongoDB win ties.
       var score = MAP_TECH_POINTS, why = [MAP_TECH_WHY[k.id]];
       MAP_QUALS.forEach(function (q) {
         if (quals.indexOf(q.id) > -1 && q.points[k.id]) { score += q.points[k.id]; why.push(q.why[k.id]); }
@@ -993,7 +1215,19 @@
     ['S9', 'Confluent blog: Feed your data lake with AI-ready tables for 30-50% lower cost', 'https://www.confluent.io/blog/tableflow-tco-savings/', 'The 30-50% figure. Vendor claim.'],
     ['S10', 'Confluent Learn: Observability', 'https://www.confluent.io/learn/observability/', 'Fully managed sink connectors for Datadog, Splunk and Elastic'],
     ['S11', 'Datadog blog: Monitor Confluent Platform with Datadog', 'https://www.datadoghq.com/blog/monitor-confluent-platform-datadog/', 'Datadog integration for monitoring Confluent Platform'],
-    ['S12', 'Confluent docs: Integrate Tableflow with Unity Catalog', 'https://docs.confluent.io/cloud/current/topics/tableflow/how-to-guides/catalog-integration/integrate-with-unity-catalog.html', 'Unity Catalogs on private networks are not supported']
+    ['S12', 'Confluent docs: Integrate Tableflow with Unity Catalog', 'https://docs.confluent.io/cloud/current/topics/tableflow/how-to-guides/catalog-integration/integrate-with-unity-catalog.html', 'Unity Catalogs on private networks are not supported'],
+    ['S13', 'Confluent blog: Confluent Cloud Offers Fully Managed MongoDB Connector for Kafka', 'https://www.confluent.io/blog/confluent-cloud-fully-managed-kafka-mongodb-connector', 'Fully managed MongoDB Atlas source and sink connectors are generally available; they expose a subset of the self-hosted connector options'],
+    ['S14', 'Confluent blog: Confluent Joins MongoDB\u2019s AI Applications Program', 'https://www.confluent.io/blog/confluent-joins-mongodb-ai-applications-program', 'Governed, processed data streams feed MongoDB Atlas vector search'],
+    ['S15', 'MongoDB docs: MongoDB Kafka Connector', 'https://www.mongodb.com/docs/kafka-connector/current', 'Confluent-verified connector; MongoDB recommends Confluent Cloud to host Kafka and the connector'],
+    ['S16', 'MongoDB docs: Compare Kafka Connector and Atlas Stream Processing', 'https://www.mongodb.com/docs/kafka-connector/current/kafka-connector-atlas-stream-processing-comparison', 'Atlas Stream Processing still needs a hosted Kafka cluster; Confluent Cloud is listed as a hosting option'],
+    ['S17', 'Confluent: Confluent Cloud vs. Amazon MSK', 'https://www.confluent.io/compare/confluent-cloud-vs-amazon-msk', 'Vendor claims: 40-70% lower TCO than self-managed Kafka; cross-AZ networking can be 80-90% of hosted Kafka infrastructure cost'],
+    ['S18', 'Confluent white paper: Unpacking the true costs of open source Kafka and MSK', 'https://www.confluent.io/resources/white-paper/confluent-kafka-msk-tco-comparison', 'Vendor claim: up to 60% lower data streaming TCO; compares against self-managed Kafka and MSK'],
+    ['S19', 'Confluent docs: Migrate to Confluent Cloud', 'https://docs.confluent.io/cloud/current/clusters/migrate-to-confluent-cloud.html', 'Migration from self-managed Kafka or Amazon MSK; Cluster Linking copies topics and syncs consumer offsets'],
+    ['S20', 'Confluent blog: Migrate From Hosted Kafka to Confluent Cloud in the KRaft Era', 'https://www.confluent.io/blog/migrate-hosted-kafka-to-confluent-cloud-kraft', 'KCP tool scans an existing Kafka environment and plans the migration'],
+    ['S21', 'Confluent blog: Hosted Apache Kafka vs. Fully Managed With Confluent Cloud', 'https://www.confluent.io/blog/hosted-apache-kafka-vs-fully-managed', 'Vendor-published case: SecurityScorecard moved off MSK and reports saving over $1 million'],
+    ['S22', 'Confluent blog: Delta Lake & Unity Catalog Now Integrate With Tableflow', 'https://www.confluent.io/blog/tableflow-databricks-delta-lake-unity-catalog', 'Expanded Confluent and Databricks partnership built around Tableflow'],
+    ['S23', 'Confluent docs: Geo-replication with Cluster Linking', 'https://docs.confluent.io/cloud/current/multi-cloud/cluster-linking/index.html', 'Any Kafka 3.0+ cluster, including Amazon MSK, can be a Cluster Linking source'],
+    ['S24', 'Confluent docs: Using Cluster Linking for Data Migration', 'https://docs.confluent.io/cloud/current/multi-cloud/cluster-linking/migrate-cc.html', 'Migration guide; cites a customer zero-downtime migration from Apache Kafka']
   ];
   document.getElementById('sources-body').innerHTML = SOURCES.map(function (s) {
     return '<tr id="src-' + s[0] + '"><td><span class="src-tag">[' + s[0] + ']</span></td>' +
@@ -1008,6 +1242,7 @@
     var parts = (location.hash || '#overview').slice(1).split('/');
     showTab(parts[0], false);
     if (parts[0] === 'library' && parts[1]) selectKit(parts[1], false);
+    if (parts[0] === 'upsell' && parts[1]) selectUpsell(parts[1], false);
   }
   window.addEventListener('hashchange', fromHash);
   fromHash();
